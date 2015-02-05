@@ -1,6 +1,5 @@
 #IMPORTANT: pydevd_constants must be the 1st thing defined because it'll keep a reference to the original sys._getframe
 from __future__ import nested_scopes # Jython 2.1 support
-from pydevd_constants import * # @UnusedWildImport
 
 import pydev_monkey_qt
 from pydevd_utils import save_main_module
@@ -27,9 +26,7 @@ from pydevd_comm import  CMD_CHANGE_VARIABLE, \
                          CMD_SET_NEXT_STATEMENT,\
                          CMD_STEP_INTO, \
                          CMD_STEP_OVER, \
-                         CMD_STEP_RETURN, \
-                         CMD_THREAD_CREATE, \
-                         CMD_THREAD_KILL, \
+                         CMD_STEP_RETURN, CMD_THREAD_KILL, \
                          CMD_THREAD_RUN, \
                          CMD_THREAD_SUSPEND, \
                          CMD_RUN_TO_LINE, \
@@ -51,9 +48,7 @@ from pydevd_comm import  CMD_CHANGE_VARIABLE, \
                          InternalGetArray, \
                          InternalTerminateThread, \
                          InternalRunThread, \
-                         InternalStepThread, \
-                         NetCommand, \
-                         NetCommandFactory, \
+                         InternalStepThread, NetCommandFactory, \
                          PyDBDaemonThread, \
                          _queue, \
                          ReaderThread, \
@@ -64,9 +59,7 @@ from pydevd_comm import  CMD_CHANGE_VARIABLE, \
                          StartClient, \
                          StartServer, \
                          InternalSetNextStatementThread, \
-                         ReloadCodeCommand, \
-                         ID_TO_MEANING,\
-                         CMD_SET_PY_EXCEPTION, \
+                         ReloadCodeCommand, CMD_SET_PY_EXCEPTION, \
                          CMD_IGNORE_THROWN_EXCEPTION_AT,\
                          InternalGetBreakpointException, \
                          InternalSendCurrExceptionTrace,\
@@ -91,6 +84,8 @@ import pydevd_traceproperty
 from _pydev_imps import _pydev_time as time, _pydev_thread
 
 import _pydev_threading as threading
+from pydevd_thread_analyser.pydevd_thread_wrappers import wrap_threads, LockWrapper
+from pydevd_thread_analyser.pydevd_thread_logger import log_event
 
 import os
 import atexit
@@ -159,6 +154,7 @@ DONT_TRACE = {
               'pydevd_vars.py':1,
               'pydevd_vm_type.py':1,
               'pydevd_xml.py':1,
+              'pydevd_thread_wrappers.py': 1,
             }
 
 if IS_PY3K:
@@ -371,6 +367,7 @@ class PyDB:
         self.plugin = None
         self.has_plugin_line_breaks = False
         self.has_plugin_exception_breaks = False
+        self.thread_analyser = True
         
     def get_plugin_lazy_init(self):
         if self.plugin is None and SUPPORT_PLUGINS:
@@ -1472,6 +1469,9 @@ class PyDB:
 
             filename, base = GetFilenameAndBase(frame)
 
+            if self.thread_analyser:
+                log_event(frame)
+
             is_file_to_ignore = DictContains(DONT_TRACE, base) #we don't want to debug threading or anything related to pydevd
 
             #print('trace_dispatch', base, frame.f_lineno, event, frame.f_code.co_name, is_file_to_ignore)
@@ -1644,6 +1644,8 @@ class PyDB:
             while not self.readyToRun:
                 time.sleep(0.1)  # busy wait until we receive run command
 
+        if self.thread_analyser:
+            wrap_threads()
 
         pydev_imports.execfile(file, globals, locals)  # execute the script
 
