@@ -227,6 +227,10 @@ public class PyDebugRunner extends GenericProgramRunner {
       addProjectRootsToEnv(project, generalCommandLine);
     }
 
+    if (PyDebuggerOptionsProvider.getInstance(project).isSaveThreadingLog()) {
+      debugParams.addParameter("--save-threading");
+    }
+
     if (PyDebuggerOptionsProvider.getInstance(project).isSupportGeventDebugging()) {
       generalCommandLine.getEnvironment().put(GEVENT_SUPPORT, "True");
     }

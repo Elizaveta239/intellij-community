@@ -367,7 +367,7 @@ class PyDB:
         self.plugin = None
         self.has_plugin_line_breaks = False
         self.has_plugin_exception_breaks = False
-        self.thread_analyser = True
+        self.thread_analyser = False
         
     def get_plugin_lazy_init(self):
         if self.plugin is None and SUPPORT_PLUGINS:
@@ -1689,6 +1689,7 @@ def processCommandLine(argv):
     setup['multiproc'] = False #Used by PyCharm (reuses connection: ssh tunneling)
     setup['multiprocess'] = False # Used by PyDev (creates new connection to ide)
     setup['save-signatures'] = False
+    setup['save-threading'] = False
     setup['print-in-debugger-startup'] = False
     setup['cmd-line'] = False
     i = 0
@@ -1728,6 +1729,9 @@ def processCommandLine(argv):
         elif argv[i] == '--save-signatures':
             del argv[i]
             setup['save-signatures'] = True
+        elif argv[i] == '--save-threading':
+            del argv[i]
+            setup['save-threading'] = True
         elif argv[i] == '--print-in-debugger-startup':
             del argv[i]
             setup['print-in-debugger-startup'] = True
@@ -2211,6 +2215,9 @@ if __name__ == '__main__':
                 # Only import it if we're going to use it!
                 from pydevd_signature import SignatureFactory
                 debugger.signature_factory = SignatureFactory()
+
+        if setup['save-threading']:
+            debugger.thread_analyser = True
 
         try:
             debugger.connect(host, port)

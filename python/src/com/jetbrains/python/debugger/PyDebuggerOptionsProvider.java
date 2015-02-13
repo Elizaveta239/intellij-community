@@ -52,12 +52,14 @@ public class PyDebuggerOptionsProvider implements PersistentStateComponent<PyDeb
     myState.myAttachToSubprocess = state.myAttachToSubprocess;
     myState.mySaveCallSignatures = state.mySaveCallSignatures;
     myState.mySupportGeventDebugging = state.mySupportGeventDebugging;
+    myState.mySaveThreadingLog = state.mySaveThreadingLog;
   }
 
   public static class State {
     public boolean myAttachToSubprocess = true;
     public boolean mySaveCallSignatures = false;
     public boolean mySupportGeventDebugging = false;
+    public boolean mySaveThreadingLog = false;
   }
 
 
@@ -83,6 +85,14 @@ public class PyDebuggerOptionsProvider implements PersistentStateComponent<PyDeb
 
   public void setSupportGeventDebugging(boolean supportGeventDebugging) {
     myState.mySupportGeventDebugging = supportGeventDebugging;
+  }
+
+  public boolean isSaveThreadingLog() {
+    return myState.mySaveThreadingLog;
+  }
+
+  public void setSaveThreadingLog(boolean collectThreadingLog) {
+    myState.mySaveThreadingLog = collectThreadingLog;
   }
 }
 
