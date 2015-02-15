@@ -53,6 +53,7 @@ public abstract class AbstractCommand<T> {
   public static final String TAB_CHAR = "@_@TAB_CHAR@_@";
 
   public static final int GET_ARRAY = 143;
+  public static final int LOG_THREADING_EVENT = 144;
 
   @NotNull private final RemoteDebugger myDebugger;
   private final int myCommandCode;
@@ -185,6 +186,10 @@ public abstract class AbstractCommand<T> {
 
   public static boolean isCallSignatureTrace(int command) {
     return command == CALL_SIGNATURE_TRACE;
+  }
+
+  public static boolean isThreadingEvent(int command) {
+    return command == LOG_THREADING_EVENT;
   }
 
   public static boolean isWriteToConsole(final int command) {

@@ -52,6 +52,7 @@ import com.jetbrains.python.PythonFileType;
 import com.jetbrains.python.console.PythonDebugLanguageConsoleView;
 import com.jetbrains.python.console.pydev.PydevCompletionVariant;
 import com.jetbrains.python.debugger.pydev.*;
+import com.jetbrains.python.debugger.threading.PyThreadingLogManager;
 import com.jetbrains.python.psi.PyFunction;
 import com.jetbrains.python.run.PythonProcessHandler;
 import org.jetbrains.annotations.NotNull;
@@ -293,6 +294,11 @@ public class PyDebugProcess extends XDebugProcess implements IPyDebugProcess, Pr
   @Override
   public void recordSignature(PySignature signature) {
     PySignatureCacheManager.getInstance(getSession().getProject()).recordSignature(myPositionConverter.convertSignature(signature));
+  }
+
+  @Override
+  public void recordThreadingEvent(PyThreadingEvent event) {
+    PyThreadingLogManager.getInstance(getSession().getProject()).recordEvent(event);
   }
 
   @Override

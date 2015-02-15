@@ -26,6 +26,8 @@ public interface IPyDebugProcess extends PyFrameAccessor {
 
   void recordSignature(PySignature signature);
 
+  void recordThreadingEvent(PyThreadingEvent event);
+
   void showConsole(PyThreadInfo thread);
 
   void loadReferrers(PyReferringObjectsValue var, PyDebugCallback<XValueChildrenList> callback);

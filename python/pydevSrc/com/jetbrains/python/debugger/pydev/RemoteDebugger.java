@@ -532,6 +532,9 @@ public class RemoteDebugger implements ProcessDebugger {
         else if (AbstractCommand.isCallSignatureTrace(frame.getCommand())) {
           recordCallSignature(ProtocolParser.parseCallSignature(frame.getPayload()));
         }
+        else if (AbstractCommand.isThreadingEvent(frame.getCommand())) {
+          assert false;
+        }
         else {
           placeResponse(frame.getSequence(), frame);
         }
@@ -544,6 +547,10 @@ public class RemoteDebugger implements ProcessDebugger {
 
     private void recordCallSignature(PySignature signature) {
       myDebugProcess.recordSignature(signature);
+    }
+
+    private void recordThreadingEvent(PyThreadingEvent event) {
+      myDebugProcess.recordThreadingEvent(event);
     }
 
     // todo: extract response processing
