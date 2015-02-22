@@ -41,6 +41,10 @@ public class ProtocolParser {
     return signature;
   }
 
+  public static PyThreadingEvent parseThreadingEvent(String payload) throws PyDebuggerException {
+    return new PyLockEvent("234_seq1", PyLockEvent.EVENT_TYPE.CREATE);
+  }
+
   public static String parseSourceContent(String payload) throws PyDebuggerException {
     return payload;
   }

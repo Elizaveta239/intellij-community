@@ -12,6 +12,17 @@ THREAD_METHODS = ['start', 'join']
 LOCK_METHODS = ['acquire', 'release']
 LOCK_CONTEXT_MGR = ['__enter__', '__exit__']
 
+from pydevd_comm import GlobalDebuggerHolder, NetCommand
+
+
+def send_message(t=None):
+    dbg = GlobalDebuggerHolder.globalDbg
+    text = "<xml><threading_event>"
+    text += " hello "
+    text += "</threading_event></xml>"
+
+    dbg.writer.addCommand(NetCommand(144, 0, text))
+
 
 def log_event(frame):
     write_log = False
@@ -28,9 +39,12 @@ def log_event(frame):
         if back_base not in DONT_TRACE_THREADING:
             method_name = frame.f_code.co_name
             if isinstance(self_obj, threading.Thread) and method_name in THREAD_METHODS:
+                send_message()
                 print(GetThreadId(self_obj), back_base, back.f_lineno, frame.f_code.co_name)
             elif self_obj.__class__ == LockWrapper:
                 if DictContains(frame.f_locals, "attr") and frame.f_locals["attr"] in LOCK_METHODS:
+                    send_message()
                     print(GetThreadId(t), back_base, back.f_lineno, frame.f_locals["attr"])
                 elif method_name in LOCK_CONTEXT_MGR:
+                    send_message()
                     print(GetThreadId(t), back_base, back.f_lineno, frame.f_code.co_name)
