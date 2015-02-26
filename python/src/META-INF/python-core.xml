@@ -724,6 +724,11 @@
       <add-to-group group-id="ToolsMenu" anchor="first"/>
     </action>
 
+    <action id="PyDebugger.ShowLog" class="com.jetbrains.python.debugger.threading.PyShowThreadingLogAction"
+            text="Show threading log">
+      <add-to-group group-id="ToolsMenu" anchor="first"/>
+    </action>
+
     <group id="PyPackagingMenu" text="Packaging">
       <action id="CreateSetupPy" class="com.jetbrains.python.packaging.setupPy.CreateSetupPyAction"/>
       <action id="RunSetupPyTask" class="com.jetbrains.python.packaging.setupPy.SetupTaskChooserAction"/>
