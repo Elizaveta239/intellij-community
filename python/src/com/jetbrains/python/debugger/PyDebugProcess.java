@@ -298,7 +298,7 @@ public class PyDebugProcess extends XDebugProcess implements IPyDebugProcess, Pr
 
   @Override
   public void recordThreadingEvent(PyThreadingEvent event) {
-    PyThreadingLogManager.getInstance(getSession().getProject()).recordEvent(event);
+    PyThreadingLogManager.getInstance(getSession().getProject()).recordEvent(getSession(), event);
   }
 
   @Override

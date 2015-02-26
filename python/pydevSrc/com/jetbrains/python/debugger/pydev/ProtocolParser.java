@@ -42,7 +42,44 @@ public class ProtocolParser {
   }
 
   public static PyThreadingEvent parseThreadingEvent(String payload) throws PyDebuggerException {
-    return new PyLockEvent("234_seq1", PyLockEvent.EVENT_TYPE.CREATE);
+    final XppReader reader = openReader(payload, true);
+    reader.moveDown();
+    if (!"threading_event".equals(reader.getNodeName())) {
+      throw new PyDebuggerException("Expected <threading_event>, found " + reader.getNodeName());
+    }
+    final Integer time = Integer.parseInt(readString(reader, "time", ""));
+    final String thread_id = readString(reader, "thread_id", "");
+    final String type = readString(reader, "type", "");
+    PyThreadingEvent threadingEvent;
+    if (type.equals("lock")) {
+      threadingEvent = new PyLockEvent(time, thread_id);
+    } else if (type.equals("thread")) {
+      threadingEvent = new PyThreadEvent(time, thread_id);
+    } else {
+      throw new PyDebuggerException("Unknown type " + type);
+    }
+
+    final String event = readString(reader, "event", "");
+    if (event.equals("__init__")) {
+      threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.CREATE);
+    } else if (event.equals("start")) {
+      threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.START);
+    } else if (event.equals("join")) {
+      threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.JOIN);
+    } else if (event.equals("acquire") || event.equals("__enter__")) {
+      threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.ACQUIRE);
+    } else if (event.equals("release") || event.equals("__exit__")) {
+      threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.RELEASE);
+    } else {
+      throw new PyDebuggerException("Unknown event " + event);
+    }
+
+    final String file = readString(reader, "file", "");
+    final String line = readString(reader, "line", "");
+
+    threadingEvent.setInfo(file + " " + line);
+
+    return threadingEvent;
   }
 
   public static String parseSourceContent(String payload) throws PyDebuggerException {

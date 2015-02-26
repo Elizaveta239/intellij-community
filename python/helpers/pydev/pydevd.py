@@ -85,7 +85,7 @@ from _pydev_imps import _pydev_time as time, _pydev_thread
 
 import _pydev_threading as threading
 from pydevd_thread_analyser.pydevd_thread_wrappers import wrap_threads, LockWrapper
-from pydevd_thread_analyser.pydevd_thread_logger import log_event
+from pydevd_thread_analyser.pydevd_thread_logger import ThreadingLogger
 
 import os
 import atexit
@@ -1470,7 +1470,7 @@ class PyDB:
             filename, base = GetFilenameAndBase(frame)
 
             if self.thread_analyser:
-                log_event(frame)
+                self.thread_analyser.log_event(frame)
 
             is_file_to_ignore = DictContains(DONT_TRACE, base) #we don't want to debug threading or anything related to pydevd
 
@@ -1585,7 +1585,7 @@ class PyDB:
 
 
         PyDBCommandThread(self).start()
-        if self.signature_factory is not None:
+        if self.signature_factory is not None or self.thread_analyser is not None:
             # we need all data to be sent to IDE even after program finishes
             CheckOutputThread(self).start()
 
@@ -1644,7 +1644,7 @@ class PyDB:
             while not self.readyToRun:
                 time.sleep(0.1)  # busy wait until we receive run command
 
-        if self.thread_analyser:
+        if self.thread_analyser is not None:
             wrap_threads()
 
         pydev_imports.execfile(file, globals, locals)  # execute the script
@@ -2217,7 +2217,7 @@ if __name__ == '__main__':
                 debugger.signature_factory = SignatureFactory()
 
         if setup['save-threading']:
-            debugger.thread_analyser = True
+            debugger.thread_analyser = ThreadingLogger()
 
         try:
             debugger.connect(host, port)

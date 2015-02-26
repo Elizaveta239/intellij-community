@@ -3,10 +3,9 @@ package com.jetbrains.python.debugger;
 
 
 public class PyThreadEvent extends PyThreadingEvent {
-  public EVENT_TYPE myType;
 
-  public enum EVENT_TYPE {
-    CREATE, START, JOIN
+  public PyThreadEvent(Integer time, String threadId) {
+    super(time, threadId);
   }
 
   @Override
@@ -19,9 +18,11 @@ public class PyThreadEvent extends PyThreadingEvent {
     return false;
   }
 
-
-  public PyThreadEvent(String threadId, EVENT_TYPE event) {
-    super(threadId);
-    myType = event;
+  @Override
+  public String toString() {
+    return myTime + " " + myThreadId + " PyThreadEvent " +
+           "myType=" + myType +
+           " " + myInfo +
+           '\n';
   }
 }
