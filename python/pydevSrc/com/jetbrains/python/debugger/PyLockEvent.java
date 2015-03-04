@@ -23,6 +23,6 @@ public class PyLockEvent extends PyThreadingEvent {
     return myTime + " " + myThreadId + " PyLockEvent" +
            " myType=" + myType +
            " " + myInfo +
-           '\n';
+           "<br>";
   }
 }

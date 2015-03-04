@@ -97,6 +97,11 @@
     <!-- Console -->
     <toolWindow id="Python Console" anchor="bottom" icon="PythonIcons.Python.PythonConsoleToolWindow"
                 factoryClass="com.jetbrains.python.console.PythonConsoleToolWindowFactory" secondary="false"/>
+    <!--Threading log-->
+    <toolWindow id="Threading log"
+                anchor="bottom"
+                secondary="true"
+                factoryClass="com.jetbrains.python.debugger.threading.tool.ThreadingLogToolWindowFactory"/>
   </extensions>
 
   <actions>

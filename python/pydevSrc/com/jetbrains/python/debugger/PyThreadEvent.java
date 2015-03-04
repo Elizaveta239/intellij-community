@@ -20,9 +20,9 @@ public class PyThreadEvent extends PyThreadingEvent {
 
   @Override
   public String toString() {
-    return myTime + " " + myThreadId + " PyThreadEvent " +
-           "myType=" + myType +
+    return myTime + " " + myThreadId + " PyThreadEvent" +
+           " myType=" + myType +
            " " + myInfo +
-           '\n';
+           "<br>";
   }
 }
