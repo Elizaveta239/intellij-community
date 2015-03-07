@@ -9,6 +9,26 @@ public class PyLockEvent extends PyThreadingEvent {
   }
 
   @Override
+  public String getEventName() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Lock ");
+    switch (myType) {
+      case CREATE:
+        sb.append(" created");
+        break;
+      case ACQUIRE:
+        sb.append(" acquared");
+        break;
+      case RELEASE:
+        sb.append(" released");
+        break;
+      default:
+        sb.append(" unknown command");
+    }
+    return sb.toString();
+  }
+
+  @Override
   public boolean isThreadEvent() {
     return false;
   }

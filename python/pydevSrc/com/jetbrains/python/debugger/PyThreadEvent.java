@@ -9,6 +9,26 @@ public class PyThreadEvent extends PyThreadingEvent {
   }
 
   @Override
+  public String getEventName() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Thread ");
+    switch (myType) {
+      case CREATE:
+        sb.append(" created");
+        break;
+      case START:
+        sb.append(" started");
+        break;
+      case JOIN:
+        sb.append(" joined");
+        break;
+      default:
+        sb.append(" unknown command");
+    }
+    return sb.toString();
+  }
+
+  @Override
   public boolean isThreadEvent() {
     return true;
   }

@@ -26,6 +26,18 @@ public class PyThreadingLogManagerImpl extends PyThreadingLogManager {
     return myLog;
   }
 
+  public Integer getSize() {
+    return myLog.size();
+  }
+
+  public PyThreadingEvent getEventAt(int index) {
+    return myLog.get(index);
+  }
+
+  public String getThreadIdForEventAt(int index) {
+    return myLog.get(index).getThreadId();
+  }
+
   public String getStringRepresentation() {
     StringBuilder resultBuilder = new StringBuilder();
     resultBuilder.append("<html>Size: ").append(myLog.size()).append("<br>");

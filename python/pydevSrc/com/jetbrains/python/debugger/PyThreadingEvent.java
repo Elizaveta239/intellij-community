@@ -24,6 +24,12 @@ public abstract class PyThreadingEvent {
     myInfo = info;
   }
 
+  public String getThreadId() {
+    return myThreadId;
+  }
+
+  public abstract String getEventName();
+
   public abstract boolean isThreadEvent();
 
   public abstract boolean isLockEvent();
