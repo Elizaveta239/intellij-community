@@ -48,13 +48,14 @@ public class ProtocolParser {
       throw new PyDebuggerException("Expected <threading_event>, found " + reader.getNodeName());
     }
     final Integer time = Integer.parseInt(readString(reader, "time", ""));
+    final String name = readString(reader, "name", "");
     final String thread_id = readString(reader, "thread_id", "");
     final String type = readString(reader, "type", "");
     PyThreadingEvent threadingEvent;
     if (type.equals("lock")) {
-      threadingEvent = new PyLockEvent(time, thread_id);
+      threadingEvent = new PyLockEvent(time, thread_id, name);
     } else if (type.equals("thread")) {
-      threadingEvent = new PyThreadEvent(time, thread_id);
+      threadingEvent = new PyThreadEvent(time, thread_id, name);
     } else {
       throw new PyDebuggerException("Unknown type " + type);
     }

@@ -56,7 +56,7 @@ public class ThreadingTableModel extends AbstractTableModel {
     PyThreadingEvent event = myLogManager.getEventAt(rowIndex);
     switch (columnIndex) {
       case THREAD_COLUMN:
-        return new ThreadCell(event.getThreadId());
+        return new ThreadCell(event.getThreadName());
       case GRAPH_COLUMN:
         return new GraphCell();
       case EVENT_COLUMN:

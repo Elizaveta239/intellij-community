@@ -8,12 +8,14 @@ public abstract class PyThreadingEvent {
   };
   Integer myTime;
   String myThreadId;
+  String myName;
   EVENT_TYPE myType;
   String myInfo;
 
-  public PyThreadingEvent(Integer time, String threadId) {
+  public PyThreadingEvent(Integer time, String threadId, String name) {
     myTime = time;
     myThreadId = threadId;
+    myName = name;
   }
 
   public void setType(EVENT_TYPE type) {
@@ -26,6 +28,10 @@ public abstract class PyThreadingEvent {
 
   public String getThreadId() {
     return myThreadId;
+  }
+
+  public String getThreadName() {
+    return myName;
   }
 
   public abstract String getEventName();

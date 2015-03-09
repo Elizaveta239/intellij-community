@@ -4,8 +4,8 @@ package com.jetbrains.python.debugger;
 
 public class PyLockEvent extends PyThreadingEvent {
 
-  public PyLockEvent(Integer time, String threadId) {
-    super(time, threadId);
+  public PyLockEvent(Integer time, String threadId, String name) {
+    super(time, threadId, name);
   }
 
   @Override

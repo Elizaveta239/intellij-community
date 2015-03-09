@@ -4,8 +4,9 @@ package com.jetbrains.python.debugger;
 
 public class PyThreadEvent extends PyThreadingEvent {
 
-  public PyThreadEvent(Integer time, String threadId) {
-    super(time, threadId);
+
+  public PyThreadEvent(Integer time, String threadId, String name) {
+    super(time, threadId, name);
   }
 
   @Override
