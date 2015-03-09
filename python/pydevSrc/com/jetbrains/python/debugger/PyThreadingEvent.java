@@ -4,7 +4,7 @@ package com.jetbrains.python.debugger;
 
 public abstract class PyThreadingEvent {
   public enum EVENT_TYPE {
-    CREATE, ACQUIRE, RELEASE, START, JOIN
+    CREATE, ACQUIRE, RELEASE, START, JOIN, STOP
   };
   Integer myTime;
   String myThreadId;

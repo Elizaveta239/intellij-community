@@ -10,7 +10,9 @@ threadingCurrentThread = threading.currentThread
 
 
 DONT_TRACE_THREADING = ['threading.py', 'pydevd.py']
-THREAD_METHODS = ['start', 'join']
+THREAD_METHODS = ['start', '_stop']
+INNER_METHODS = ['_stop']
+INNER_FILES = ['threading.py']
 LOCK_METHODS = ['acquire', 'release']
 LOCK_CONTEXT_MGR = ['__enter__', '__exit__']
 
@@ -57,20 +59,28 @@ class ThreadingLogger:
                     return
                 name, back_base = GetFilenameAndBase(back)
                 event_time = cur_time() - self.start_time
-                if back_base not in DONT_TRACE_THREADING:
-                    method_name = frame.f_code.co_name
-                    if isinstance(self_obj, threading.Thread) and method_name in THREAD_METHODS:
+                file_name = frame.f_code.co_name
+                if back_base not in DONT_TRACE_THREADING or (file_name in INNER_METHODS and back_base in INNER_FILES):
+                    if isinstance(self_obj, threading.Thread) and file_name in THREAD_METHODS:
                         thread_id = GetThreadId(self_obj)
-                        self.send_message(event_time, self_obj.getName(), thread_id, "thread", frame.f_code.co_name, back.f_code.co_filename, back.f_lineno)
-                        print(event_time, self_obj.getName(), thread_id, back_base, back.f_lineno, frame.f_code.co_name)
+                        method_name = frame.f_code.co_name
+                        if method_name == "_stop":
+                            if back_base in INNER_FILES and back.f_code.co_name == "_wait_for_tstate_lock":
+                                method_name = "join"
+                            else:
+                                method_name = "stop"
+                        self.send_message(event_time, self_obj.getName(), thread_id, "thread", method_name, back.f_code.co_filename, back.f_lineno)
+                        # print(event_time, self_obj.getName(), thread_id, back_base, back.f_lineno, frame.f_code.co_name)
                     elif self_obj.__class__ == LockWrapper:
                         if DictContains(frame.f_locals, "attr") and frame.f_locals["attr"] in LOCK_METHODS:
                             thread_id = GetThreadId(self_obj)
-                            self.send_message(event_time, t.getName(), GetThreadId(t), "lock", frame.f_locals["attr"], back.f_code.co_filename, back.f_lineno)
-                            print(event_time, t.getName(), GetThreadId(t), back_base, back.f_lineno, frame.f_locals["attr"])
-                        elif method_name in LOCK_CONTEXT_MGR:
+                            method_name = frame.f_locals["attr"]
+                            self.send_message(event_time, t.getName(), GetThreadId(t), "lock", method_name, back.f_code.co_filename, back.f_lineno)
+                            # print(event_time, t.getName(), GetThreadId(t), back_base, back.f_lineno, frame.f_locals["attr"])
+                        elif file_name in LOCK_CONTEXT_MGR:
                             thread_id = GetThreadId(self_obj)
-                            self.send_message(event_time, t.getName(), GetThreadId(t), "lock", frame.f_code.co_name, back.f_code.co_filename, back.f_lineno)
-                            print(event_time, t.getName(), GetThreadId(t), back_base, back.f_lineno, frame.f_code.co_name)
+                            method_name = frame.f_code.co_name
+                            self.send_message(event_time, t.getName(), GetThreadId(t), "lock", method_name, back.f_code.co_filename, back.f_lineno)
+                            # print(event_time, t.getName(), GetThreadId(t), back_base, back.f_lineno, frame.f_code.co_name)
         except e:
             traceback.print_exc(e)

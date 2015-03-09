@@ -67,6 +67,8 @@ public class ProtocolParser {
       threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.START);
     } else if (event.equals("join")) {
       threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.JOIN);
+    } else if (event.equals("stop")) {
+      threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.STOP);
     } else if (event.equals("acquire") || event.equals("__enter__")) {
       threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.ACQUIRE);
     } else if (event.equals("release") || event.equals("__exit__")) {
