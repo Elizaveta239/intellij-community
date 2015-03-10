@@ -30,6 +30,10 @@ public abstract class PyThreadingEvent {
     return myThreadId;
   }
 
+  public EVENT_TYPE getType() {
+    return myType;
+  }
+
   public String getThreadName() {
     return myName;
   }
