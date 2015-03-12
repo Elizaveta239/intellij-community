@@ -65,6 +65,7 @@ class ThreadingLogger:
                         thread_id = GetThreadId(self_obj)
                         method_name = frame.f_code.co_name
                         if method_name == "_stop":
+                            # TODO: Python 2
                             if back_base in INNER_FILES and back.f_code.co_name == "_wait_for_tstate_lock":
                                 method_name = "join"
                             else:

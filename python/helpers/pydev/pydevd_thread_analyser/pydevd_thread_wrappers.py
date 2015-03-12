@@ -44,8 +44,9 @@ def factory_wrapper(fun):
 
 
 def wrap_threads():
-    import _thread as mod
-    print("Thread imported")
+    # TODO: add wrappers for thread and _thread
+    # import _thread as mod
+    # print("Thread imported")
     # mod.start_new_thread = wrapper(mod.start_new_thread)
     import threading
     threading.Lock = factory_wrapper(threading.Lock)
