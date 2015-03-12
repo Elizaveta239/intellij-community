@@ -40,7 +40,7 @@ public class ThreadingTable extends JBTable {
     super.setModel(model);
     if (!myColumnsInitialized) {
       myColumnsInitialized = true;
-      setColumnSizes();
+      //setColumnSizes();
     }
   }
 
