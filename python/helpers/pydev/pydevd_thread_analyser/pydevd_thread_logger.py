@@ -68,6 +68,7 @@ class ThreadingLogger:
                             # TODO: Python 2
                             if back_base in INNER_FILES and back.f_code.co_name == "_wait_for_tstate_lock":
                                 method_name = "join"
+                                back = back.f_back.f_back
                             else:
                                 method_name = "stop"
                         self.send_message(event_time, self_obj.getName(), thread_id, "thread", method_name, back.f_code.co_filename, back.f_lineno)
