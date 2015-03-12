@@ -46,7 +46,8 @@ public class PyThreadEvent extends PyThreadingEvent {
   public String toString() {
     return myTime + " " + myThreadId + " PyThreadEvent" +
            " myType=" + myType +
-           " " + myInfo +
+           " " + myFileName +
+           " " + myLine +
            "<br>";
   }
 }

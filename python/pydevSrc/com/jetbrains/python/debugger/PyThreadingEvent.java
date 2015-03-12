@@ -10,7 +10,8 @@ public abstract class PyThreadingEvent {
   String myThreadId;
   String myName;
   EVENT_TYPE myType;
-  String myInfo;
+  String myFileName;
+  Integer myLine;
 
   public PyThreadingEvent(Integer time, String threadId, String name) {
     myTime = time;
@@ -22,8 +23,20 @@ public abstract class PyThreadingEvent {
     myType = type;
   }
 
-  public void setInfo(String info) {
-    myInfo = info;
+  public void setFileName(String fileName) {
+    myFileName = fileName;
+  }
+
+  public String getFileName() {
+    return myFileName;
+  }
+
+  public void setLine(Integer line) {
+    myLine = line;
+  }
+
+  public Integer getLine() {
+    return myLine;
   }
 
   public String getThreadId() {

@@ -42,7 +42,8 @@ public class PyLockEvent extends PyThreadingEvent {
   public String toString() {
     return myTime + " " + myThreadId + " PyLockEvent" +
            " myType=" + myType +
-           " " + myInfo +
+           " " + myFileName +
+           " " + myLine +
            "<br>";
   }
 }

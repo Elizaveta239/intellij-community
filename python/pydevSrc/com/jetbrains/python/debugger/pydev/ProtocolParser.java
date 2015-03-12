@@ -77,10 +77,8 @@ public class ProtocolParser {
       throw new PyDebuggerException("Unknown event " + event);
     }
 
-    final String file = readString(reader, "file", "");
-    final String line = readString(reader, "line", "");
-
-    threadingEvent.setInfo(file + " " + line);
+    threadingEvent.setFileName(readString(reader, "file", ""));
+    threadingEvent.setLine(Integer.parseInt(readString(reader, "line", "")) - 1);
 
     return threadingEvent;
   }

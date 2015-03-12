@@ -31,7 +31,7 @@ public class ThreadingLogToolWindowPanel extends ThreadingPanel {
       }
     });
 
-    myTable = new ThreadingTable(logManager);
+    myTable = new ThreadingTable(logManager, project);
     myTable.setModel(new ThreadingTableModel(logManager));
 
     add(ScrollPaneFactory.createScrollPane(myTable));

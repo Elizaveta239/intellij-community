@@ -1,9 +1,18 @@
 
 package com.jetbrains.python.debugger.threading;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Computable;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.impl.file.impl.FileManagerImpl;
 import com.intellij.xdebugger.XDebugSession;
 import com.intellij.xdebugger.XDebugSessionListener;
+import com.intellij.xdebugger.XSourcePosition;
+import com.intellij.xdebugger.impl.XSourcePositionImpl;
 import com.jetbrains.python.debugger.PyThreadingEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -74,6 +83,12 @@ public class PyThreadingLogManagerImpl extends PyThreadingLogManager {
 
       }
     });
+  }
+
+  public XSourcePosition getSourcePositionForEventNumber(int num) {
+    final PyThreadingEvent event = myLog.get(num);
+    VirtualFile vFile = LocalFileSystem.getInstance().findFileByPath(event.getFileName());
+    return XSourcePositionImpl.create(vFile, event.getLine());
   }
 
   @Override
