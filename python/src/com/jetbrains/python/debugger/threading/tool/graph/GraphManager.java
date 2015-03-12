@@ -9,7 +9,6 @@ import com.jetbrains.python.debugger.threading.PyThreadingLogManagerImpl;
 import com.jetbrains.python.debugger.threading.tool.graph.ui.DrawElement;
 import com.jetbrains.python.debugger.threading.tool.ui.ThreadingColorManager;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,20 +43,16 @@ public class GraphManager {
 
   public String getStringForRow(int row) {
     StringBuilder sb = new StringBuilder();
-    //TODO: add real value
-    int myRow = row + 1;
-    for (int i = 0; i < threadCountForRow[myRow]; ++i) {
-      sb.append(myGraphScheme[myRow][i].toString()).append(" ");
+    for (int i = 0; i < threadCountForRow[row]; ++i) {
+      sb.append(myGraphScheme[row][i].toString()).append(" ");
     }
     return sb.toString();
   }
 
   public ArrayList<DrawElement> getDrawElementsForRow(int row) {
     ArrayList<DrawElement> rowElements = new ArrayList<DrawElement>();
-    //TODO: add real value
-    int myRow = row + 1;
-    for (int i = 0; i < threadCountForRow[myRow]; ++i) {
-      rowElements.add(myGraphScheme[myRow][i]);
+    for (int i = 0; i < threadCountForRow[row]; ++i) {
+      rowElements.add(myGraphScheme[row][i]);
     }
     return rowElements;
   }
@@ -93,18 +88,11 @@ public class GraphManager {
   }
 
   public void updateGraph() {
-    Color baseColor = new Color(255);
     myGraphScheme = new DrawElement[myLogManager.getSize() + 1][MAX_THREAD_COUNT];
     threadCountForRow = new int[myLogManager.getSize() + 1];
-    // Fake value for Main thread started
-    //TODO: add real value
-    myGraphScheme[0][0] = new DrawElement(DrawElement.ElementType.THREAD_START, baseColor);
     List<PyThreadingEvent> myLog = myLogManager.getLog();
-    currentMaxThread = 1;
-    threadIndexToId.put("no_id", currentMaxThread - 1);
-    threadCountForRow[0] = 1;
-    // finish
-    int i = 1;
+    currentMaxThread = 0;
+    int i = 0;
     for (PyThreadingEvent event: myLog) {
       String eventThreadId = event.getThreadId();
 
@@ -119,9 +107,7 @@ public class GraphManager {
                                                 myGraphScheme[i - 1][j].getColor());
         }
         myGraphScheme[i][currentMaxThread - 1] = element;
-      }
-      else {
-        // TODO: The same issue with main thread
+      } else {
         int eventThreadIdInt = threadIndexToId.containsKey(eventThreadId) ? threadIndexToId.get(eventThreadId): 0;
         for (int j = 0; j < currentMaxThread; ++j) {
           if (j != eventThreadIdInt) {
