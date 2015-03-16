@@ -367,7 +367,7 @@ class PyDB:
         self.plugin = None
         self.has_plugin_line_breaks = False
         self.has_plugin_exception_breaks = False
-        self.thread_analyser = False
+        self.thread_analyser = None
         
     def get_plugin_lazy_init(self):
         if self.plugin is None and SUPPORT_PLUGINS:
@@ -1469,7 +1469,7 @@ class PyDB:
 
             filename, base = GetFilenameAndBase(frame)
 
-            if self.thread_analyser:
+            if self.thread_analyser is not None:
                 self.thread_analyser.log_event(frame)
 
             is_file_to_ignore = DictContains(DONT_TRACE, base) #we don't want to debug threading or anything related to pydevd
