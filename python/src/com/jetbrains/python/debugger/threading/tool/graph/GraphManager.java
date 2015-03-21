@@ -31,12 +31,7 @@ public class GraphManager {
     myLogManager.registerListener(new PyThreadingLogManagerImpl.Listener() {
       @Override
       public void logChanged() {
-        UIUtil.invokeLaterIfNeeded(new Runnable() {
-          @Override
-          public void run() {
-            updateGraph();
-          }
-        });
+        updateGraph();
       }
     });
   }

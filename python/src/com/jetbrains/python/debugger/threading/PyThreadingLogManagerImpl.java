@@ -99,6 +99,7 @@ public class PyThreadingLogManagerImpl extends PyThreadingLogManager {
       addSessionListener();
     }
     myLog.add(event);
+    notifyListeners();
   }
 
   public interface Listener {
