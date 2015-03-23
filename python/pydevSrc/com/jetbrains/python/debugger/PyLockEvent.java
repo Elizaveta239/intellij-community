@@ -16,8 +16,11 @@ public class PyLockEvent extends PyThreadingEvent {
       case CREATE:
         sb.append(" created");
         break;
-      case ACQUIRE:
-        sb.append(" acquared");
+      case ACQUIRE_BEGIN:
+        sb.append(" acquire started");
+        break;
+      case ACQUIRE_END:
+        sb.append(" acquired");
         break;
       case RELEASE:
         sb.append(" released");

@@ -69,9 +69,13 @@ public class ProtocolParser {
       threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.JOIN);
     } else if (event.equals("stop")) {
       threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.STOP);
-    } else if (event.equals("acquire") || event.equals("__enter__")) {
-      threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.ACQUIRE);
-    } else if (event.equals("release") || event.equals("__exit__")) {
+    } else if (event.equals("acquire_begin") || event.equals("__enter___begin")) {
+      threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.ACQUIRE_BEGIN);
+    }  else if (event.equals("acquire_end") || event.equals("__enter___end")) {
+        threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.ACQUIRE_END);
+    } else if (event.startsWith("release") || event.startsWith("__exit__")) {
+      // we record release begin and end on the Python side, but it is not important info
+      // for user. Maybe use it later
       threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.RELEASE);
     } else {
       throw new PyDebuggerException("Unknown event " + event);
