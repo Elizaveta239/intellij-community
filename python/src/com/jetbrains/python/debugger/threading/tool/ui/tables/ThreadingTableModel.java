@@ -4,6 +4,7 @@ package com.jetbrains.python.debugger.threading.tool.ui.tables;
 import com.jetbrains.python.debugger.PyThreadingEvent;
 import com.jetbrains.python.debugger.threading.PyThreadingLogManagerImpl;
 import com.jetbrains.python.debugger.threading.tool.graph.ui.GraphCell;
+import com.jetbrains.python.debugger.threading.tool.ui.ThreadingNamesManager;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -17,9 +18,11 @@ public class ThreadingTableModel extends AbstractTableModel {
   private static final String[] COLUMN_NAMES = {"Thread", "Graph", "Event"};
 
   private final PyThreadingLogManagerImpl myLogManager;
+  private final ThreadingNamesManager myThreadingNamesManager;
 
   public ThreadingTableModel(PyThreadingLogManagerImpl logManager) {
     myLogManager = logManager;
+    myThreadingNamesManager = new ThreadingNamesManager();
   }
 
   @Override
@@ -60,7 +63,7 @@ public class ThreadingTableModel extends AbstractTableModel {
       case GRAPH_COLUMN:
         return new GraphCell();
       case EVENT_COLUMN:
-        return event.getEventName();
+        return myThreadingNamesManager.getFullEventName(event);
       default:
         return null;
     }

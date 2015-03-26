@@ -10,9 +10,8 @@ public class PyThreadEvent extends PyThreadingEvent {
   }
 
   @Override
-  public String getEventName() {
+  public String getEventActionName() {
     StringBuilder sb = new StringBuilder();
-    sb.append("Thread ");
     switch (myType) {
       case CREATE:
         sb.append(" created");

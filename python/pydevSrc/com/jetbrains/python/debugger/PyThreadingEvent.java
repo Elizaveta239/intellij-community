@@ -6,12 +6,12 @@ public abstract class PyThreadingEvent {
   public enum EVENT_TYPE {
     CREATE, ACQUIRE_BEGIN, ACQUIRE_END, RELEASE, START, JOIN, STOP
   };
-  Integer myTime;
-  String myThreadId;
-  String myName;
-  EVENT_TYPE myType;
-  String myFileName;
-  Integer myLine;
+  protected Integer myTime;
+  protected String myThreadId;
+  protected String myName;
+  protected EVENT_TYPE myType;
+  protected String myFileName;
+  protected Integer myLine;
 
   public PyThreadingEvent(Integer time, String threadId, String name) {
     myTime = time;
@@ -51,7 +51,7 @@ public abstract class PyThreadingEvent {
     return myName;
   }
 
-  public abstract String getEventName();
+  public abstract String getEventActionName();
 
   public abstract boolean isThreadEvent();
 

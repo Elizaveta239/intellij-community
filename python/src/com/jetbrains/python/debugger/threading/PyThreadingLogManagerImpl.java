@@ -1,19 +1,15 @@
 
 package com.jetbrains.python.debugger.threading;
 
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.impl.file.impl.FileManagerImpl;
 import com.intellij.xdebugger.XDebugSession;
 import com.intellij.xdebugger.XDebugSessionListener;
 import com.intellij.xdebugger.XSourcePosition;
 import com.intellij.xdebugger.impl.XSourcePositionImpl;
 import com.jetbrains.python.debugger.PyThreadingEvent;
+import com.jetbrains.python.debugger.threading.tool.ui.ThreadingNamesManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -24,11 +20,13 @@ public class PyThreadingLogManagerImpl extends PyThreadingLogManager {
   private XDebugSession lastSession;
   private List<PyThreadingEvent> myLog;
   private final List<Listener> myListeners;
+  public ThreadingNamesManager myLockManager;
 
   public PyThreadingLogManagerImpl(Project project) {
     myProject = project;
     myLog = new ArrayList<PyThreadingEvent>();
     myListeners = new ArrayList<Listener>();
+    myLockManager = new ThreadingNamesManager();
   }
 
   public List<PyThreadingEvent> getLog() {

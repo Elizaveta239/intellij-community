@@ -26,7 +26,7 @@ class ThreadingLogger:
     def __init__(self):
         self.start_time = cur_time()
 
-    def send_message(self, time, name, thread_id, type, event, file, line):
+    def send_message(self, time, name, thread_id, type, event, file, line, lock_id=0):
         dbg = GlobalDebuggerHolder.globalDbg
         cmdTextList = ['<xml>']
 
@@ -35,6 +35,8 @@ class ThreadingLogger:
         cmdTextList.append(' name="%s"' % pydevd_vars.makeValidXmlValue(name))
         cmdTextList.append(' thread_id="%s"' % pydevd_vars.makeValidXmlValue(thread_id))
         cmdTextList.append(' type="%s"' % pydevd_vars.makeValidXmlValue(type))
+        if type == "lock":
+            cmdTextList.append(' lock_id="%s"' % pydevd_vars.makeValidXmlValue(str(lock_id)))
         cmdTextList.append(' event="%s"' % pydevd_vars.makeValidXmlValue(event))
         cmdTextList.append(' file="%s"' % pydevd_vars.makeValidXmlValue(file))
         cmdTextList.append(' line="%s"' % pydevd_vars.makeValidXmlValue(str(line)))
@@ -101,7 +103,7 @@ class ThreadingLogger:
                             # do not log release end. Maybe use it later
                             return
                         self.send_message(event_time, t.getName(), GetThreadId(t), "lock",
-                        real_method, back.f_code.co_filename, back.f_lineno)
+                        real_method, back.f_code.co_filename, back.f_lineno, lock_id=str(id(self_obj)))
                         # print(event_time, t.getName(), GetThreadId(t), "lock",
                         #       real_method, back.f_code.co_filename, back.f_lineno)
 

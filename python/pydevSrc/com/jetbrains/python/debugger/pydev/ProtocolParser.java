@@ -53,7 +53,8 @@ public class ProtocolParser {
     final String type = readString(reader, "type", "");
     PyThreadingEvent threadingEvent;
     if (type.equals("lock")) {
-      threadingEvent = new PyLockEvent(time, thread_id, name);
+      String lock_id = readString(reader, "lock_id", "0");
+      threadingEvent = new PyLockEvent(time, thread_id, name, lock_id);
     } else if (type.equals("thread")) {
       threadingEvent = new PyThreadEvent(time, thread_id, name);
     } else {

@@ -3,15 +3,16 @@ package com.jetbrains.python.debugger;
 
 
 public class PyLockEvent extends PyThreadingEvent {
+  private final String myId;
 
-  public PyLockEvent(Integer time, String threadId, String name) {
+  public PyLockEvent(Integer time, String threadId, String name, String id) {
     super(time, threadId, name);
+    myId = id;
   }
 
   @Override
-  public String getEventName() {
+  public String getEventActionName() {
     StringBuilder sb = new StringBuilder();
-    sb.append("Lock ");
     switch (myType) {
       case CREATE:
         sb.append(" created");
@@ -31,6 +32,10 @@ public class PyLockEvent extends PyThreadingEvent {
     return sb.toString();
   }
 
+  public String getId() {
+    return myId;
+  }
+
   @Override
   public boolean isThreadEvent() {
     return false;
@@ -45,6 +50,7 @@ public class PyLockEvent extends PyThreadingEvent {
   public String toString() {
     return myTime + " " + myThreadId + " PyLockEvent" +
            " myType=" + myType +
+           " myId= " + myId +
            " " + myFileName +
            " " + myLine +
            "<br>";
