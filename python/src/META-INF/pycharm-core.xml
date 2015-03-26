@@ -98,7 +98,7 @@
     <toolWindow id="Python Console" anchor="bottom" icon="PythonIcons.Python.PythonConsoleToolWindow"
                 factoryClass="com.jetbrains.python.console.PythonConsoleToolWindowFactory" secondary="false"/>
     <!--Threading log-->
-    <toolWindow id="Thread/task diagram"
+    <toolWindow id="Concurrent activities diagram"
                 anchor="bottom"
                 secondary="true"
                 factoryClass="com.jetbrains.python.debugger.threading.tool.ThreadingLogToolWindowFactory"/>

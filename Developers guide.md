@@ -53,7 +53,7 @@ Threading log manager collects information received from the Python side. It is 
 listens to the debug process and updates visualization.
 
 A Toolwindow is implemented in the `threading.tool.ui` package and the most important parts of it is `ThreadingView` class. A Threading view is named
-*Thread/task diagram* and contains a table implemented in `ThreadingTable` class. Each row of this table corresponds to a threading event and
+*Concurrent activities diagram* and contains a table implemented in `ThreadingTable` class. Each row of this table corresponds to a threading event and
  each row contains information about it. The most interesting row is a row which contains a Threading graph implemented in 
  `threading.tool.graph` package.
  
