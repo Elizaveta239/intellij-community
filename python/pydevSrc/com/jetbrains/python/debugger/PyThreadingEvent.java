@@ -2,6 +2,8 @@
 package com.jetbrains.python.debugger;
 
 
+import java.util.List;
+
 public abstract class PyThreadingEvent {
   public enum EVENT_TYPE {
     CREATE, ACQUIRE_BEGIN, ACQUIRE_END, RELEASE, START, JOIN, STOP
@@ -12,6 +14,15 @@ public abstract class PyThreadingEvent {
   protected EVENT_TYPE myType;
   protected String myFileName;
   protected Integer myLine;
+  protected List<PyStackFrameInfo> myFrames;
+
+  public List<PyStackFrameInfo> getFrames() {
+    return myFrames;
+  }
+
+  public void setFrames(List<PyStackFrameInfo> frames) {
+    myFrames = frames;
+  }
 
   public PyThreadingEvent(Integer time, String threadId, String name) {
     myTime = time;

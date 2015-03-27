@@ -1,9 +1,17 @@
 
 from pydevd_constants import DictContains, GetThreadId
-from pydevd_file_utils import GetFilenameAndBase
+import pydevd_file_utils
 from pydevd_thread_analyser.pydevd_thread_wrappers import LockWrapper
 import pydevd_vars
 import time
+
+from _pydev_filesystem_encoding import getfilesystemencoding
+file_system_encoding = getfilesystemencoding()
+
+try:
+    from urllib import quote
+except:
+    from urllib.parse import quote
 
 import _pydev_threading as threading
 threadingCurrentThread = threading.currentThread
@@ -26,7 +34,55 @@ class ThreadingLogger:
     def __init__(self):
         self.start_time = cur_time()
 
-    def send_message(self, time, name, thread_id, type, event, file, line, lock_id=0):
+    def _get_text_list_for_frame(self, frame):
+        # partial copy-paste from makeThreadSuspendStr
+        curFrame = frame
+        cmdTextList = []
+        try:
+            while curFrame:
+                #print cmdText
+                myId = str(id(curFrame))
+                #print "id is ", myId
+
+                if curFrame.f_code is None:
+                    break #Iron Python sometimes does not have it!
+
+                myName = curFrame.f_code.co_name #method name (if in method) or ? if global
+                if myName is None:
+                    break #Iron Python sometimes does not have it!
+
+                #print "name is ", myName
+
+                filename, base = pydevd_file_utils.GetFilenameAndBase(curFrame)
+
+                myFile = pydevd_file_utils.NormFileToClient(filename)
+                if file_system_encoding.lower() != "utf-8" and hasattr(myFile, "decode"):
+                    # myFile is a byte string encoded using the file system encoding
+                    # convert it to utf8
+                    myFile = myFile.decode(file_system_encoding).encode("utf-8")
+
+                #print "file is ", myFile
+                #myFile = inspect.getsourcefile(curFrame) or inspect.getfile(frame)
+
+                myLine = str(curFrame.f_lineno)
+                #print "line is ", myLine
+
+                #the variables are all gotten 'on-demand'
+                #variables = pydevd_vars.frameVarsToXML(curFrame.f_locals)
+
+                variables = ''
+                cmdTextList.append('<frame id="%s" name="%s" ' % (myId , pydevd_vars.makeValidXmlValue(myName)))
+                cmdTextList.append('file="%s" line="%s">"' % (quote(myFile, '/>_= \t'), myLine))
+                cmdTextList.append(variables)
+                cmdTextList.append("</frame>")
+                curFrame = curFrame.f_back
+        except :
+            traceback.print_exc()
+
+        return cmdTextList
+
+
+    def send_message(self, time, name, thread_id, type, event, file, line, frame, lock_id=0):
         dbg = GlobalDebuggerHolder.globalDbg
         cmdTextList = ['<xml>']
 
@@ -40,7 +96,10 @@ class ThreadingLogger:
         cmdTextList.append(' event="%s"' % pydevd_vars.makeValidXmlValue(event))
         cmdTextList.append(' file="%s"' % pydevd_vars.makeValidXmlValue(file))
         cmdTextList.append(' line="%s"' % pydevd_vars.makeValidXmlValue(str(line)))
-        cmdTextList.append('></threading_event></xml>')
+        cmdTextList.append('></threading_event>')
+
+        cmdTextList += self._get_text_list_for_frame(frame)
+        cmdTextList.append('</xml>')
 
         text = ''.join(cmdTextList)
         dbg.writer.addCommand(NetCommand(144, 0, text))
@@ -59,7 +118,7 @@ class ThreadingLogger:
                 back = frame.f_back
                 if not back:
                     return
-                name, back_base = GetFilenameAndBase(back)
+                name, back_base = pydevd_file_utils.GetFilenameAndBase(back)
                 event_time = cur_time() - self.start_time
                 method_name = frame.f_code.co_name
 
@@ -77,7 +136,7 @@ class ThreadingLogger:
                             else:
                                 real_method = "stop"
                         self.send_message(event_time, self_obj.getName(), thread_id, "thread",
-                        real_method, back.f_code.co_filename, back.f_lineno)
+                        real_method, back.f_code.co_filename, back.f_lineno, back)
                         # print(event_time, self_obj.getName(), thread_id, "thread",
                         #       real_method, back.f_code.co_filename, back.f_lineno)
 
@@ -87,7 +146,7 @@ class ThreadingLogger:
                         return
                     if DictContains(frame.f_locals, "attr") and \
                                     frame.f_locals["attr"] in LOCK_METHODS:
-                        _, back_back_base = GetFilenameAndBase(back.f_back)
+                        _, back_back_base = pydevd_file_utils.GetFilenameAndBase(back.f_back)
                         back = back.f_back
                         if back_back_base in DONT_TRACE_THREADING:
                             # back_back_base is the file, where the method was called froms
@@ -103,7 +162,7 @@ class ThreadingLogger:
                             # do not log release end. Maybe use it later
                             return
                         self.send_message(event_time, t.getName(), GetThreadId(t), "lock",
-                        real_method, back.f_code.co_filename, back.f_lineno, lock_id=str(id(self_obj)))
+                        real_method, back.f_code.co_filename, back.f_lineno, back, lock_id=str(id(self_obj)))
                         # print(event_time, t.getName(), GetThreadId(t), "lock",
                         #       real_method, back.f_code.co_filename, back.f_lineno)
 

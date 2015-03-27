@@ -41,7 +41,8 @@ public class ProtocolParser {
     return signature;
   }
 
-  public static PyThreadingEvent parseThreadingEvent(String payload) throws PyDebuggerException {
+  public static PyThreadingEvent parseThreadingEvent(String payload,
+                                                     final PyPositionConverter positionConverter) throws PyDebuggerException {
     final XppReader reader = openReader(payload, true);
     reader.moveDown();
     if (!"threading_event".equals(reader.getNodeName())) {
@@ -84,6 +85,15 @@ public class ProtocolParser {
 
     threadingEvent.setFileName(readString(reader, "file", ""));
     threadingEvent.setLine(Integer.parseInt(readString(reader, "line", "")) - 1);
+    reader.moveUp();
+
+    final List<PyStackFrameInfo> frames = new LinkedList<PyStackFrameInfo>();
+    while (reader.hasMoreChildren()) {
+      reader.moveDown();
+      frames.add(parseFrame(reader, thread_id, positionConverter));
+      reader.moveUp();
+    }
+    threadingEvent.setFrames(frames);
 
     return threadingEvent;
   }

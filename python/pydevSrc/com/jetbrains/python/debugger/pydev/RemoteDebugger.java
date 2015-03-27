@@ -533,7 +533,7 @@ public class RemoteDebugger implements ProcessDebugger {
           recordCallSignature(ProtocolParser.parseCallSignature(frame.getPayload()));
         }
         else if (AbstractCommand.isThreadingEvent(frame.getCommand())) {
-          recordThreadingEvent(ProtocolParser.parseThreadingEvent(frame.getPayload()));
+          recordThreadingEvent(ProtocolParser.parseThreadingEvent(frame.getPayload(), myDebugProcess.getPositionConverter()));
         }
         else {
           placeResponse(frame.getSequence(), frame);
