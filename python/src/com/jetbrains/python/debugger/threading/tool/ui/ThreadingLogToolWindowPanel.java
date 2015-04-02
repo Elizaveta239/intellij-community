@@ -14,8 +14,8 @@ import java.awt.*;
 
 public class ThreadingLogToolWindowPanel extends ThreadingPanel {
   private final Project myProject;
-  private final JTable myTable;
-  private final JScrollPane myPane;
+  private JTable myTable;
+  private JScrollPane myPane;
 
   public ThreadingLogToolWindowPanel(Project project) {
     super(false, project);
@@ -32,16 +32,10 @@ public class ThreadingLogToolWindowPanel extends ThreadingPanel {
         });
       }
     });
-
-    myTable = new ThreadingTable(logManager, project, this);
-    myTable.setModel(new ThreadingTableModel(logManager));
-    myPane = ScrollPaneFactory.createScrollPane(myTable);
-
-    add(myPane);
   }
 
   public void showStackTrace(PyThreadingEvent event) {
-    LockToolWindowPanel lockPanel = new LockToolWindowPanel(myProject);
+    StackTracePanel lockPanel = new StackTracePanel(false, myProject);
     lockPanel.buildStackTrace(event.getFrames());
     splitWindow(lockPanel);
   }
@@ -59,6 +53,14 @@ public class ThreadingLogToolWindowPanel extends ThreadingPanel {
   }
 
   public void buildLog() {
+    if (myTable == null) {
+      myLabel.setVisible(false);
+
+      myTable = new ThreadingTable(logManager, myProject, this);
+      myTable.setModel(new ThreadingTableModel(logManager));
+      myPane = ScrollPaneFactory.createScrollPane(myTable);
+      add(myPane);
+    }
     myTable.setModel(new ThreadingTableModel(logManager));
   }
 

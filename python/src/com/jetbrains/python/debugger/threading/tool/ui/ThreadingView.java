@@ -52,12 +52,12 @@ public class ThreadingView implements PersistentStateComponent<ThreadingView.Sta
     myContentManager = toolWindow.getContentManager();
     myContentManager.addContent(mainContent);
 
-    myLockPanel = new LockToolWindowPanel(myProject);
-    Content lockPanelContent = contentFactory.createContent(myLockPanel, null, false);
-    lockPanelContent.setComponent(myLockPanel);
-    lockPanelContent.setDisplayName("Lock information");
-    Disposer.register(this, lockPanelContent);
-    myContentManager = toolWindow.getContentManager();
-    myContentManager.addContent(lockPanelContent);
+    //myLockPanel = new LockToolWindowPanel(myProject);
+    //Content lockPanelContent = contentFactory.createContent(myLockPanel, null, false);
+    //lockPanelContent.setComponent(myLockPanel);
+    //lockPanelContent.setDisplayName("Lock information");
+    //Disposer.register(this, lockPanelContent);
+    //myContentManager = toolWindow.getContentManager();
+    //myContentManager.addContent(lockPanelContent);
   }
 }

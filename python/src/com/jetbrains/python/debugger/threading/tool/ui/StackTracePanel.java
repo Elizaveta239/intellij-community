@@ -4,10 +4,12 @@ package com.jetbrains.python.debugger.threading.tool.ui;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.treeView.TreeState;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.AppUIUtil;
@@ -31,14 +33,14 @@ import java.awt.*;
 import java.util.List;
 
 
-public class LockToolWindowPanel extends ThreadingPanel {
+public class StackTracePanel extends SimpleToolWindowPanel implements Disposable {
   private final Tree myTree;
   private final DefaultTreeModel myModel;
   private final Project myProject;
   private final DefaultMutableTreeNode rootNode;
 
-  public LockToolWindowPanel(Project project) {
-    super(false, project);
+  public StackTracePanel(boolean vertical, Project project) {
+    super(vertical);
     myProject = project;
 
     String root = "root";

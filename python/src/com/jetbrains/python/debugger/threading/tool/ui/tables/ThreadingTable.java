@@ -15,7 +15,6 @@ import com.jetbrains.python.debugger.threading.tool.ui.ThreadingLogToolWindowPan
 import com.jetbrains.python.debugger.threading.tool.ui.ThreadingPanel;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -26,8 +25,6 @@ public class ThreadingTable extends JBTable {
   private final GraphManager myGraphManager;
   private final Project myProject;
   private final ThreadingLogToolWindowPanel myPanel;
-
-  private static final int THREAD_COLUMN_WIDTH = 600;
 
   private boolean myColumnsInitialized = false;
 
@@ -50,8 +47,10 @@ public class ThreadingTable extends JBTable {
         if (e.getClickCount() == 1) {
           JBTable target = (JBTable)e.getSource();
           int row = target.getSelectedRow();
-          navigateToSource(myLogManager.getSourcePositionForEventNumber(row));
-          myPanel.showStackTrace(myLogManager.getEventAt(row));
+          if (row != -1) {
+            navigateToSource(myLogManager.getSourcePositionForEventNumber(row));
+            myPanel.showStackTrace(myLogManager.getEventAt(row));
+          }
         }
       }
     });
@@ -75,15 +74,6 @@ public class ThreadingTable extends JBTable {
     if (!myColumnsInitialized) {
       myColumnsInitialized = true;
       //setColumnSizes();
-    }
-  }
-
-  protected void setColumnSizes() {
-    for (int i = 0; i < getColumnCount(); ++i) {
-      TableColumn column = getColumnModel().getColumn(i);
-      if (i == ThreadingTableModel.THREAD_COLUMN) {
-        column.setMaxWidth(THREAD_COLUMN_WIDTH);
-      }
     }
   }
 }
