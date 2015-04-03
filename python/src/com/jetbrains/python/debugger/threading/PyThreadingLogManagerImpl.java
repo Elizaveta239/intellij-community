@@ -8,7 +8,12 @@ import com.intellij.xdebugger.XDebugSession;
 import com.intellij.xdebugger.XDebugSessionListener;
 import com.intellij.xdebugger.XSourcePosition;
 import com.intellij.xdebugger.impl.XSourcePositionImpl;
+import com.jetbrains.python.debugger.PyLockEvent;
 import com.jetbrains.python.debugger.PyThreadingEvent;
+import com.jetbrains.python.debugger.threading.tool.graph.ui.LockOwnThreadState;
+import com.jetbrains.python.debugger.threading.tool.graph.ui.LockWaitThreadState;
+import com.jetbrains.python.debugger.threading.tool.graph.ui.RunThreadState;
+import com.jetbrains.python.debugger.threading.tool.graph.ui.ThreadState;
 import com.jetbrains.python.debugger.threading.tool.ui.ThreadingNamesManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,6 +58,34 @@ public class PyThreadingLogManagerImpl extends PyThreadingLogManager {
     }
     resultBuilder.append("</html>");
     return resultBuilder.toString();
+  }
+
+  public ThreadState getThreadStateAt(int index, String threadId) {
+    int locksAcquired = 0;
+    int locksOwn = 0;
+    for (int i = 0; i <= index; ++i) {
+      PyThreadingEvent event = myLog.get(i);
+      if ((event.getThreadId().equals(threadId) && event instanceof PyLockEvent)) {
+        PyLockEvent lockEvent = (PyLockEvent)event;
+        if (lockEvent.getType() == PyLockEvent.EventType.ACQUIRE_BEGIN) {
+          locksAcquired++;
+        }
+        if (lockEvent.getType() == PyLockEvent.EventType.ACQUIRE_END) {
+          locksOwn++;
+        }
+        if (lockEvent.getType() == PyLockEvent.EventType.RELEASE) {
+          locksAcquired--;
+          locksOwn--;
+        }
+      }
+    }
+    if (locksOwn > 0) {
+      return new LockOwnThreadState();
+    }
+    if (locksAcquired > 0) {
+      return new LockWaitThreadState();
+    }
+    return new RunThreadState();
   }
 
   public void addSessionListener() {

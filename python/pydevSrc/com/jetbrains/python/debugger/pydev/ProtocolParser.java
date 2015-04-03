@@ -64,21 +64,21 @@ public class ProtocolParser {
 
     final String event = readString(reader, "event", "");
     if (event.equals("__init__")) {
-      threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.CREATE);
+      threadingEvent.setType(PyThreadingEvent.EventType.CREATE);
     } else if (event.equals("start")) {
-      threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.START);
+      threadingEvent.setType(PyThreadingEvent.EventType.START);
     } else if (event.equals("join")) {
-      threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.JOIN);
+      threadingEvent.setType(PyThreadingEvent.EventType.JOIN);
     } else if (event.equals("stop")) {
-      threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.STOP);
+      threadingEvent.setType(PyThreadingEvent.EventType.STOP);
     } else if (event.equals("acquire_begin") || event.equals("__enter___begin")) {
-      threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.ACQUIRE_BEGIN);
+      threadingEvent.setType(PyThreadingEvent.EventType.ACQUIRE_BEGIN);
     }  else if (event.equals("acquire_end") || event.equals("__enter___end")) {
-        threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.ACQUIRE_END);
+        threadingEvent.setType(PyThreadingEvent.EventType.ACQUIRE_END);
     } else if (event.startsWith("release") || event.startsWith("__exit__")) {
       // we record release begin and end on the Python side, but it is not important info
       // for user. Maybe use it later
-      threadingEvent.setType(PyThreadingEvent.EVENT_TYPE.RELEASE);
+      threadingEvent.setType(PyThreadingEvent.EventType.RELEASE);
     } else {
       throw new PyDebuggerException("Unknown event " + event);
     }

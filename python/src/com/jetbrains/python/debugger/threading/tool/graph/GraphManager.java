@@ -2,11 +2,10 @@
 package com.jetbrains.python.debugger.threading.tool.graph;
 
 import com.intellij.util.containers.hash.HashMap;
-import com.intellij.util.ui.UIUtil;
 import com.jetbrains.python.debugger.PyThreadingEvent;
 import com.jetbrains.python.debugger.threading.PyThreadingLogManager;
 import com.jetbrains.python.debugger.threading.PyThreadingLogManagerImpl;
-import com.jetbrains.python.debugger.threading.tool.graph.ui.DrawElement;
+import com.jetbrains.python.debugger.threading.tool.graph.ui.*;
 import com.jetbrains.python.debugger.threading.tool.graph.ui.elements.*;
 import com.jetbrains.python.debugger.threading.tool.ui.ThreadingColorManager;
 
@@ -52,22 +51,22 @@ public class GraphManager {
     return rowElements;
   }
 
-  private static DrawElement getDrawElementForEvent(PyThreadingEvent event) {
+  private DrawElement getDrawElementForEvent(PyThreadingEvent event, DrawElement previousElement, int index) {
     switch (event.getType()) {
       case START:
-        return new ThreadStart();
+        return new EventDrawElement(null, new StoppedThreadState(), new RunThreadState());
       case JOIN:
-        return new ThreadFinish();
+        return new EventDrawElement(null, previousElement.getAfter(), new StoppedThreadState());
       case STOP:
-        return new ThreadFinish();
+        return new EventDrawElement(null, previousElement.getAfter(), new StoppedThreadState());
       case ACQUIRE_BEGIN:
-        return new AcquireBegin();
+        return new EventDrawElement(null, previousElement.getAfter(), new LockWaitThreadState());
       case ACQUIRE_END:
-        return new AcquireEnd();
+        return new EventDrawElement(null, previousElement.getAfter(), new LockOwnThreadState());
       case RELEASE:
-        return new Release();
+        return new EventDrawElement(null, previousElement.getAfter(), myLogManager.getThreadStateAt(index, event.getThreadId()));
       default:
-        return new Empty();
+        return new SimpleDrawElement(null, new StoppedThreadState(), new StoppedThreadState());
     }
   }
 
@@ -80,9 +79,9 @@ public class GraphManager {
     for (PyThreadingEvent event: myLog) {
       String eventThreadId = event.getThreadId();
 
-      if (event.isThreadEvent() && event.getType() == PyThreadingEvent.EVENT_TYPE.START) {
+      if (event.isThreadEvent() && event.getType() == PyThreadingEvent.EventType.START) {
         DrawElement element;
-        element = new ThreadStart(myColorManager.getThreadColor(eventThreadId));
+        element = new EventDrawElement(myColorManager.getThreadColor(eventThreadId), new StoppedThreadState(), new RunThreadState());
         currentMaxThread++;
         threadIndexToId.put(eventThreadId, currentMaxThread - 1);
 
@@ -103,7 +102,7 @@ public class GraphManager {
             myGraphScheme[i][j].setColor(myGraphScheme[i - 1][j].getColor());
           }
         }
-        myGraphScheme[i][eventThreadIdInt] = getDrawElementForEvent(event);
+        myGraphScheme[i][eventThreadIdInt] = getDrawElementForEvent(event, myGraphScheme[i - 1][eventThreadIdInt], i);
         myGraphScheme[i][eventThreadIdInt].setColor(myColorManager.getThreadColor(eventThreadId));
       }
       threadCountForRow[i] = currentMaxThread;

@@ -13,27 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jetbrains.python.debugger.threading.tool.graph.ui.elements;
-
-import com.jetbrains.python.debugger.threading.tool.graph.ui.DrawElement;
+package com.jetbrains.python.debugger.threading.tool.graph.ui;
 
 import java.awt.*;
 
-/**
- * Created by user on 3/23/15.
- */
-public class Empty extends DrawElement {
-
-  public Empty(Color color) {
-    super(color);
-  }
-
-  public Empty() {
-  }
-
+public class StoppedThreadState extends ThreadState {
   @Override
-  public DrawElement getNextElement() {
-    return new Empty();
+  public void prepareStroke(Graphics g) {
   }
-
 }

@@ -5,13 +5,13 @@ package com.jetbrains.python.debugger;
 import java.util.List;
 
 public abstract class PyThreadingEvent {
-  public enum EVENT_TYPE {
+  public enum EventType {
     CREATE, ACQUIRE_BEGIN, ACQUIRE_END, RELEASE, START, JOIN, STOP
   };
   protected Integer myTime;
   protected String myThreadId;
   protected String myName;
-  protected EVENT_TYPE myType;
+  protected EventType myType;
   protected String myFileName;
   protected Integer myLine;
   protected List<PyStackFrameInfo> myFrames;
@@ -30,7 +30,7 @@ public abstract class PyThreadingEvent {
     myName = name;
   }
 
-  public void setType(EVENT_TYPE type) {
+  public void setType(EventType type) {
     myType = type;
   }
 
@@ -54,7 +54,7 @@ public abstract class PyThreadingEvent {
     return myThreadId;
   }
 
-  public EVENT_TYPE getType() {
+  public EventType getType() {
     return myType;
   }
 

@@ -6,11 +6,10 @@ import com.intellij.ui.ColoredTableCellRenderer;
 import com.jetbrains.python.debugger.threading.PyThreadingLogManager;
 import com.jetbrains.python.debugger.threading.PyThreadingLogManagerImpl;
 import com.jetbrains.python.debugger.threading.tool.graph.GraphManager;
-import com.jetbrains.python.debugger.threading.tool.graph.GraphSettings;
+import com.jetbrains.python.debugger.threading.tool.graph.ui.elements.DrawElement;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 
 public class GraphCellRenderer extends ColoredTableCellRenderer {

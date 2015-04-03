@@ -16,42 +16,36 @@
 package com.jetbrains.python.debugger.threading.tool.graph.ui.elements;
 
 import com.jetbrains.python.debugger.threading.tool.graph.GraphSettings;
-import com.jetbrains.python.debugger.threading.tool.graph.ui.DrawElement;
+import com.jetbrains.python.debugger.threading.tool.graph.ui.ThreadState;
+import com.jetbrains.python.debugger.threading.tool.graph.ui.StoppedThreadState;
 
 import java.awt.*;
 
-/**
- * Created by user on 3/23/15.
- */
-public class Release extends DrawElement {
+public class SimpleDrawElement extends DrawElement {
 
-  public Release(Color color) {
-    super(color);
-  }
-
-  public Release() {
+  public SimpleDrawElement(Color color, ThreadState before, ThreadState after) {
+    super(color, before, after);
   }
 
   @Override
   public DrawElement getNextElement() {
-    return new Simple();
+    return new SimpleDrawElement(myColor, myAfter, myAfter);
   }
 
   @Override
   public void drawElement(Graphics g, int padding) {
     Graphics2D g2 = (Graphics2D)g;
-    g2.setColor(myColor);
-    g2.setStroke(new BasicStroke(GraphSettings.STROKE_BASIC));
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     int x = Math.round((padding + 0.5f) * GraphSettings.NODE_WIDTH);
 
-    g2.setStroke(new BasicStroke(GraphSettings.STROKE_WITH_LOCK));
-    g2.setColor(GraphSettings.USE_STD_COLORS? GraphSettings.LOCK_OWNING_COLOR: myColor);
+    if (myBefore instanceof StoppedThreadState) {
+      return;
+    }
+
+    myBefore.prepareStroke(g2);
     g2.drawLine(x, 0, x, Math.round(GraphSettings.CELL_HEIGH * 0.5f));
-    g2.setStroke(new BasicStroke(GraphSettings.STROKE_BASIC));
-    g2.setColor(GraphSettings.USE_STD_COLORS? GraphSettings.BASIC_COLOR: myColor);
+    myAfter.prepareStroke(g2);
     g2.drawLine(x, Math.round(GraphSettings.CELL_HEIGH * 0.5f), x, GraphSettings.CELL_HEIGH);
 
-    drawEvent(g2, padding);
   }
 }

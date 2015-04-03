@@ -13,39 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jetbrains.python.debugger.threading.tool.graph.ui.elements;
+package com.jetbrains.python.debugger.threading.tool.graph.ui;
 
 import com.jetbrains.python.debugger.threading.tool.graph.GraphSettings;
-import com.jetbrains.python.debugger.threading.tool.graph.ui.DrawElement;
-
 import java.awt.*;
 
-/**
- * Created by user on 3/23/15.
- */
-public class ThreadFinish extends DrawElement {
 
-  public ThreadFinish(Color color) {
-    super(color);
-  }
-
-  public ThreadFinish() {
-  }
-
+public class LockOwnThreadState extends ThreadState {
   @Override
-  public DrawElement getNextElement() {
-    return new Empty();
-  }
-
-  @Override
-  public void drawElement(Graphics g, int padding) {
+  public void prepareStroke(Graphics g) {
     Graphics2D g2 = (Graphics2D)g;
-    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    int x = Math.round((padding + 0.5f) * GraphSettings.NODE_WIDTH);
-
-    g2.setColor(GraphSettings.USE_STD_COLORS? GraphSettings.BASIC_COLOR: myColor);
     g2.setStroke(new BasicStroke(GraphSettings.STROKE_BASIC));
-    g2.drawLine(x, 0, x, Math.round(GraphSettings.CELL_HEIGH * 0.5f));
-    drawEvent(g, padding);
+    g2.setColor(GraphSettings.LOCK_OWNING_COLOR);
   }
 }
