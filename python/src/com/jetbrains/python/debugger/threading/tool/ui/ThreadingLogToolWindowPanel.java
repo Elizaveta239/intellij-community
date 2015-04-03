@@ -32,6 +32,10 @@ public class ThreadingLogToolWindowPanel extends ThreadingPanel {
         });
       }
     });
+
+    if (logManager.getSize() != 0) {
+      buildLog();
+    }
   }
 
   public void showStackTrace(PyThreadingEvent event) {
