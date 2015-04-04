@@ -158,6 +158,9 @@ public class PyDebugProcess extends XDebugProcess implements IPyDebugProcess, Pr
         }
       }
     });
+
+    //notify log manager about new session
+    PyThreadingLogManager.getInstance(getSession().getProject()).recordEvent(getSession(), null);
   }
 
   private MultiProcessDebugger createMultiprocessDebugger(ServerSocket serverSocket) {

@@ -123,11 +123,12 @@ public class PyThreadingLogManagerImpl extends PyThreadingLogManager {
   }
 
   @Override
-  public void recordEvent(@NotNull XDebugSession debugSession, @NotNull PyThreadingEvent event) {
-    if ((lastSession == null) || (debugSession != lastSession)) {
+  public void recordEvent(@NotNull XDebugSession debugSession, PyThreadingEvent event) {
+    if (((lastSession == null) || (debugSession != lastSession)) && event == null) {
       lastSession = debugSession;
       myLog = new ArrayList<PyThreadingEvent>();
       addSessionListener();
+      return;
     }
     myLog.add(event);
     notifyListeners();

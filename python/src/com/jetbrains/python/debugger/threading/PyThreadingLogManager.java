@@ -12,7 +12,7 @@ public abstract class PyThreadingLogManager {
     return ServiceManager.getService(project, PyThreadingLogManager.class);
   }
 
-  public abstract void recordEvent(@NotNull XDebugSession debugProcess, @NotNull PyThreadingEvent event);
+  public abstract void recordEvent(@NotNull XDebugSession debugProcess, PyThreadingEvent event);
 
   public abstract String getStringRepresentation();
 

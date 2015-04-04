@@ -33,9 +33,7 @@ public class ThreadingLogToolWindowPanel extends ThreadingPanel {
       }
     });
 
-    if (logManager.getSize() != 0) {
-      buildLog();
-    }
+    buildLog();
   }
 
   public void showStackTrace(PyThreadingEvent event) {
@@ -57,6 +55,12 @@ public class ThreadingLogToolWindowPanel extends ThreadingPanel {
   }
 
   public void buildLog() {
+    if (logManager.getSize() == 0) {
+      myTable = null;
+      initMessage();
+      return;
+    }
+
     if (myTable == null) {
       myLabel.setVisible(false);
 

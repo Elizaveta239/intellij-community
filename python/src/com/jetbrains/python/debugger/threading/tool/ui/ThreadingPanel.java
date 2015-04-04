@@ -19,6 +19,11 @@ public abstract class ThreadingPanel extends SimpleToolWindowPanel implements Di
     myProject = project;
     logManager = (PyThreadingLogManagerImpl)PyThreadingLogManager.getInstance(project);
 
+    initMessage();
+  }
+
+  protected void initMessage() {
+    removeAll();
     myLabel = new JLabel();
     myLabel.setHorizontalAlignment(JLabel.CENTER);
     myLabel.setVerticalAlignment(JLabel.CENTER);
