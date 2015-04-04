@@ -1,5 +1,9 @@
 # Changes
 
+## 0.2.1, 04.04.2015
+
+Bug fix release
+
 ## 0.2, 31.03.2015
 
 * Lock events added: acquire started and acquired 
