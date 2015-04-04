@@ -101,6 +101,7 @@
     <toolWindow id="Concurrent Activities Diagram"
                 anchor="bottom"
                 secondary="true"
+                icon="AllIcons.Toolwindows.ToolWindowStructure"
                 factoryClass="com.jetbrains.python.debugger.threading.tool.ThreadingLogToolWindowFactory"/>
   </extensions>
 
