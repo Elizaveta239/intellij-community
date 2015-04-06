@@ -79,14 +79,21 @@ public class StackTracePanel extends SimpleToolWindowPanel implements Disposable
 
           boolean isExternal = true;
           final VirtualFile file = LocalFileSystem.getInstance().findFileByPath(position.getFile());
-          final Document document = FileDocumentManager.getInstance().getDocument(file);
-          if (document != null) {
-            isExternal = !ProjectRootManager.getInstance(myProject).getFileIndex().isInContent(file);
+          String filename;
+          if (file != null) {
+            final Document document = FileDocumentManager.getInstance().getDocument(file);
+            if (document != null) {
+              isExternal = !ProjectRootManager.getInstance(myProject).getFileIndex().isInContent(file);
+            }
+            filename = file.getName();
+          } else {
+            append("<frame not available>", SimpleTextAttributes.GRAY_ATTRIBUTES);
+            return;
           }
 
           append(frameInfo.getName(), gray(SimpleTextAttributes.REGULAR_ATTRIBUTES, isExternal));
           append(", ", gray(SimpleTextAttributes.REGULAR_ATTRIBUTES, isExternal));
-          append(file.getName(), gray(SimpleTextAttributes.REGULAR_ATTRIBUTES, isExternal));
+          append(filename, gray(SimpleTextAttributes.REGULAR_ATTRIBUTES, isExternal));
           append(":", gray(SimpleTextAttributes.REGULAR_ATTRIBUTES, isExternal));
           append(Integer.toString(position.getLine() + 1), gray(SimpleTextAttributes.REGULAR_ATTRIBUTES, isExternal));
         }
