@@ -17,20 +17,16 @@
 package com.jetbrains.python.debugger.concurrency.tool.asyncio;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.util.ui.UIUtil;
 import com.jetbrains.python.debugger.PyThreadingEvent;
-import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
 import com.jetbrains.python.debugger.concurrency.tool.StackTracePanel;
 import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
-import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingPanel;
-import com.jetbrains.python.debugger.concurrency.tool.threading.tables.ThreadingTable;
-import com.jetbrains.python.debugger.concurrency.tool.threading.tables.ThreadingTableModel;
+import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyPanel;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class AsyncioLogToolWindowPanel extends ThreadingPanel {
+public class AsyncioLogToolWindowPanel extends ConcurrencyPanel {
   private final Project myProject;
   private JTable myTable;
   private JScrollPane myPane;

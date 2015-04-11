@@ -12,7 +12,7 @@ import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.GraphCe
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.GraphSettings;
 import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingColorManager;
 import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingLogToolWindowPanel;
-import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingPanel;
+import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyPanel;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.table.TableModel;
@@ -28,7 +28,7 @@ public class ThreadingTable extends JBTable {
 
   private boolean myColumnsInitialized = false;
 
-  public ThreadingTable(PyThreadingLogManagerImpl logManager, Project project, ThreadingPanel panel) {
+  public ThreadingTable(PyThreadingLogManagerImpl logManager, Project project, ConcurrencyPanel panel) {
     super();
 
     myLogManager = logManager;

@@ -11,15 +11,14 @@ import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
 import com.jetbrains.python.debugger.concurrency.tool.asyncio.AsyncioLogToolWindowPanel;
 import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingLogToolWindowPanel;
-import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingPanel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ConcurrencyView implements PersistentStateComponent<ConcurrencyView.State>, Disposable  {
   private final Project myProject;
   private ContentManager myContentManager;
-  private ThreadingPanel myGraphPanel;
-  private ThreadingPanel myAsyncioPanel;
+  private ConcurrencyPanel myGraphPanel;
+  private ConcurrencyPanel myAsyncioPanel;
 
   public ConcurrencyView(Project project) {
     myProject = project;
