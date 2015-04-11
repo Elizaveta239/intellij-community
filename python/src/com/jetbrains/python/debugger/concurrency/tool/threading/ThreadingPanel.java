@@ -5,7 +5,6 @@ import com.intellij.openapi.Disposable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
-import com.jetbrains.python.debugger.concurrency.PyThreadingLogManagerImpl;
 
 import javax.swing.*;
 

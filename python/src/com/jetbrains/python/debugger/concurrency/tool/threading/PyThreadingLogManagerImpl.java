@@ -1,5 +1,5 @@
 
-package com.jetbrains.python.debugger.concurrency;
+package com.jetbrains.python.debugger.concurrency.tool.threading;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
@@ -8,6 +8,7 @@ import com.intellij.xdebugger.XSourcePosition;
 import com.intellij.xdebugger.impl.XSourcePositionImpl;
 import com.jetbrains.python.debugger.PyLockEvent;
 import com.jetbrains.python.debugger.PyThreadingEvent;
+import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.LockOwnThreadState;
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.LockWaitThreadState;
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.RunThreadState;

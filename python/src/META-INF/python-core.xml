@@ -482,7 +482,7 @@
                     serviceImplementation="com.jetbrains.python.debugger.PySignatureCacheManagerImpl"/>
 
     <projectService serviceInterface="com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager"
-                    serviceImplementation="com.jetbrains.python.debugger.concurrency.PyThreadingLogManagerImpl"/>
+                    serviceImplementation="com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl"/>
 
     <projectService serviceInterface="com.jetbrains.python.psi.PyPsiFacade"
                     serviceImplementation="com.jetbrains.python.psi.impl.PyPsiFacadeImpl"/>

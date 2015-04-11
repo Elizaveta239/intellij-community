@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.AppUIUtil;
 import com.intellij.ui.table.JBTable;
 import com.intellij.xdebugger.XSourcePosition;
-import com.jetbrains.python.debugger.concurrency.PyThreadingLogManagerImpl;
+import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.GraphManager;
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.GraphCell;
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.GraphCellRenderer;

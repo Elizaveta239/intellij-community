@@ -2,7 +2,7 @@
 package com.jetbrains.python.debugger.concurrency.tool.threading.tables;
 
 import com.jetbrains.python.debugger.PyThreadingEvent;
-import com.jetbrains.python.debugger.concurrency.PyThreadingLogManagerImpl;
+import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.GraphCell;
 import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingNamesManager;
 
