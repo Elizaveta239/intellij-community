@@ -1,5 +1,20 @@
 
-package com.jetbrains.python.debugger.concurrency.tool.threading;
+/*
+ * Copyright 2000-2015 JetBrains s.r.o.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.jetbrains.python.debugger.concurrency.tool.asyncio;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.ScrollPaneFactory;
@@ -7,21 +22,23 @@ import com.intellij.util.ui.UIUtil;
 import com.jetbrains.python.debugger.PyThreadingEvent;
 import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
 import com.jetbrains.python.debugger.concurrency.tool.StackTracePanel;
+import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
+import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingPanel;
 import com.jetbrains.python.debugger.concurrency.tool.threading.tables.ThreadingTable;
 import com.jetbrains.python.debugger.concurrency.tool.threading.tables.ThreadingTableModel;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class ThreadingLogToolWindowPanel extends ThreadingPanel {
+public class AsyncioLogToolWindowPanel extends ThreadingPanel {
   private final Project myProject;
   private JTable myTable;
   private JScrollPane myPane;
 
-  public ThreadingLogToolWindowPanel(Project project) {
+  public AsyncioLogToolWindowPanel(Project project) {
     super(false, project);
     myProject = project;
-    logManager = PyThreadingLogManagerImpl.getInstance(project);
+    logManager = PyAsyncioLogManagerImpl.getInstance(project);
 
     logManager.registerListener(new PyThreadingLogManagerImpl.Listener() {
       @Override
@@ -44,7 +61,7 @@ public class ThreadingLogToolWindowPanel extends ThreadingPanel {
     myLabel = new JLabel();
     myLabel.setHorizontalAlignment(JLabel.CENTER);
     myLabel.setVerticalAlignment(JLabel.CENTER);
-    myLabel.setText("<html>The Threading log is empty. <br>" +
+    myLabel.setText("<html>The Asyncio log is empty. <br>" +
                     "Check the box \"Build diagram for concurrent programs\" " +
                     "in Settings | Build, Execution, Deployment | Python debugger</html>");
     add(myLabel);
@@ -74,16 +91,16 @@ public class ThreadingLogToolWindowPanel extends ThreadingPanel {
       initMessage();
       return;
     }
-
-    if (myTable == null) {
-      myLabel.setVisible(false);
-
-      myTable = new ThreadingTable((PyThreadingLogManagerImpl)logManager, myProject, this);
-      myTable.setModel(new ThreadingTableModel((PyThreadingLogManagerImpl)logManager));
-      myPane = ScrollPaneFactory.createScrollPane(myTable);
-      add(myPane);
-    }
-    myTable.setModel(new ThreadingTableModel((PyThreadingLogManagerImpl)logManager));
+    //
+    //if (myTable == null) {
+    //  myLabel.setVisible(false);
+    //
+    //  myTable = new ThreadingTable(logManager, myProject, this);
+    //  myTable.setModel(new ThreadingTableModel(logManager));
+    //  myPane = ScrollPaneFactory.createScrollPane(myTable);
+    //  add(myPane);
+    //}
+    //myTable.setModel(new ThreadingTableModel(logManager));
   }
 
   @Override

@@ -1,6 +1,7 @@
 
 package com.jetbrains.python.debugger.concurrency.tool.threading;
 
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -19,6 +20,10 @@ import java.util.ArrayList;
 
 public class PyThreadingLogManagerImpl extends PyConcurrencyLogManager<PyThreadingEvent> {
   public ThreadingNamesManager myLockManager;
+
+  public static PyThreadingLogManagerImpl getInstance(Project project) {
+    return ServiceManager.getService(project, PyThreadingLogManagerImpl.class);
+  }
 
   public PyThreadingLogManagerImpl(Project project) {
     myProject = project;

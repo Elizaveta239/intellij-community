@@ -481,9 +481,6 @@
     <projectService serviceInterface="com.jetbrains.python.debugger.PySignatureCacheManager"
                     serviceImplementation="com.jetbrains.python.debugger.PySignatureCacheManagerImpl"/>
 
-    <projectService serviceInterface="com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager"
-                    serviceImplementation="com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl"/>
-
     <projectService serviceInterface="com.jetbrains.python.psi.PyPsiFacade"
                     serviceImplementation="com.jetbrains.python.psi.impl.PyPsiFacadeImpl"/>
     <applicationService serviceInterface="com.jetbrains.python.packaging.PyPackageManagers"
@@ -721,11 +718,6 @@
             text="Attach to Process..."
             description="Attach debugger to a Python process">
 
-      <add-to-group group-id="ToolsMenu" anchor="first"/>
-    </action>
-
-    <action id="PyDebugger.ShowLog" class="com.jetbrains.python.debugger.concurrency.PyShowThreadingLogAction"
-            text="Show threading log">
       <add-to-group group-id="ToolsMenu" anchor="first"/>
     </action>
 

@@ -85,6 +85,11 @@
     <projectService serviceInterface="com.jetbrains.python.configuration.PyConfigurableInterpreterList"
                     serviceImplementation="com.jetbrains.python.configuration.PyConfigurableInterpreterList"/>
 
+
+    <projectService serviceImplementation="com.jetbrains.python.debugger.concurrency.tool.asyncio.PyAsyncioLogManagerImpl"/>
+
+    <projectService serviceImplementation="com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl"/>
+
     <bundledColorScheme path="/colorSchemes/Darcula"/>
     <bundledColorScheme path="/colorSchemes/monokai"/>
     <bundledColorScheme path="/colorSchemes/twilight"/>
@@ -128,6 +133,11 @@
 
       <add-to-group group-id="WelcomeScreen.QuickStart" anchor="first"/>
     </group>
+
+    <action id="PyDebugger.ShowLog" class="com.jetbrains.python.debugger.concurrency.PyShowThreadingLogAction"
+            text="Show threading log">
+      <add-to-group group-id="ToolsMenu" anchor="first"/>
+    </action>
 
     <action id="MarkSourceRoot" class="com.intellij.ide.projectView.actions.MarkJavaSourceRootAction">
       <add-to-group group-id="MarkRootGroup"/>

@@ -51,6 +51,7 @@ import com.intellij.xdebugger.stepping.XSmartStepIntoHandler;
 import com.jetbrains.python.PythonFileType;
 import com.jetbrains.python.console.PythonDebugLanguageConsoleView;
 import com.jetbrains.python.console.pydev.PydevCompletionVariant;
+import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
 import com.jetbrains.python.debugger.pydev.*;
 import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
 import com.jetbrains.python.psi.PyFunction;
@@ -160,7 +161,7 @@ public class PyDebugProcess extends XDebugProcess implements IPyDebugProcess, Pr
     });
 
     //notify log manager about new session
-    PyConcurrencyLogManager.getInstance(getSession().getProject()).recordEvent(getSession(), null);
+    PyThreadingLogManagerImpl.getInstance(getSession().getProject()).recordEvent(getSession(), null);
   }
 
   private MultiProcessDebugger createMultiprocessDebugger(ServerSocket serverSocket) {
@@ -301,7 +302,7 @@ public class PyDebugProcess extends XDebugProcess implements IPyDebugProcess, Pr
 
   @Override
   public void recordThreadingEvent(PyThreadingEvent event) {
-    PyConcurrencyLogManager.getInstance(getSession().getProject()).recordEvent(getSession(), event);
+    PyThreadingLogManagerImpl.getInstance(getSession().getProject()).recordEvent(getSession(), event);
   }
 
   @Override

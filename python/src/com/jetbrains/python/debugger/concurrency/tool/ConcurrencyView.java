@@ -9,6 +9,7 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
+import com.jetbrains.python.debugger.concurrency.tool.asyncio.AsyncioLogToolWindowPanel;
 import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingLogToolWindowPanel;
 import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingPanel;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +19,7 @@ public class ConcurrencyView implements PersistentStateComponent<ConcurrencyView
   private final Project myProject;
   private ContentManager myContentManager;
   private ThreadingPanel myGraphPanel;
-  private ThreadingPanel myLockPanel;
+  private ThreadingPanel myAsyncioPanel;
 
   public ConcurrencyView(Project project) {
     myProject = project;
@@ -54,12 +55,12 @@ public class ConcurrencyView implements PersistentStateComponent<ConcurrencyView
     myContentManager = toolWindow.getContentManager();
     myContentManager.addContent(mainContent);
 
-    //myLockPanel = new LockToolWindowPanel(myProject);
-    //Content lockPanelContent = contentFactory.createContent(myLockPanel, null, false);
-    //lockPanelContent.setComponent(myLockPanel);
-    //lockPanelContent.setDisplayName("Lock information");
-    //Disposer.register(this, lockPanelContent);
-    //myContentManager = toolWindow.getContentManager();
-    //myContentManager.addContent(lockPanelContent);
+    myAsyncioPanel = new AsyncioLogToolWindowPanel(myProject);
+    Content lockPanelContent = contentFactory.createContent(myAsyncioPanel, null, false);
+    lockPanelContent.setComponent(myAsyncioPanel);
+    lockPanelContent.setDisplayName("Asyncio graph");
+    Disposer.register(this, lockPanelContent);
+    myContentManager = toolWindow.getContentManager();
+    myContentManager.addContent(lockPanelContent);
   }
 }

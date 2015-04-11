@@ -64,6 +64,7 @@ public class PyDebugRunner extends GenericProgramRunner {
   public static final String PORT_PARAM = "--port";
   public static final String FILE_PARAM = "--file";
   public static final String PYCHARM_PROJECT_ROOTS = "PYCHARM_PROJECT_ROOTS";
+  public static final String PYTHON_ASYNCIO_DEBUG = "PYTHONASYNCIODEBUG";
   @SuppressWarnings("SpellCheckingInspection")
   public static final String GEVENT_SUPPORT = "GEVENT_SUPPORT";
 
@@ -230,6 +231,10 @@ public class PyDebugRunner extends GenericProgramRunner {
     if (PyDebuggerOptionsProvider.getInstance(project).isSaveThreadingLog()) {
       debugParams.addParameter("--save-threading");
     }
+
+    // TODO: add option in settings
+    debugParams.addParameter("--save-asyncio");
+    generalCommandLine.getEnvironment().put(PYTHON_ASYNCIO_DEBUG, "1");
 
     if (PyDebuggerOptionsProvider.getInstance(project).isSupportGeventDebugging()) {
       generalCommandLine.getEnvironment().put(GEVENT_SUPPORT, "True");

@@ -16,10 +16,6 @@ public abstract class PyConcurrencyLogManager<T> {
   protected XDebugSession lastSession;
   protected Project myProject;
 
-  public static PyConcurrencyLogManager getInstance(Project project) {
-    return ServiceManager.getService(project, PyConcurrencyLogManager.class);
-  }
-
   public Integer getSize() {
     return myLog.size();
   }

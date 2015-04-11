@@ -10,25 +10,15 @@ import javax.swing.*;
 
 public abstract class ThreadingPanel extends SimpleToolWindowPanel implements Disposable {
   private final Project myProject;
-  protected final PyThreadingLogManagerImpl logManager;
+  protected PyConcurrencyLogManager logManager;
   protected JLabel myLabel;
 
   public ThreadingPanel(boolean vertical, Project project) {
     super(vertical);
     myProject = project;
-    logManager = (PyThreadingLogManagerImpl)PyConcurrencyLogManager.getInstance(project);
 
     initMessage();
   }
 
-  protected void initMessage() {
-    removeAll();
-    myLabel = new JLabel();
-    myLabel.setHorizontalAlignment(JLabel.CENTER);
-    myLabel.setVerticalAlignment(JLabel.CENTER);
-    myLabel.setText("<html>The Concurrent Activities log is empty. <br>" +
-                    "Check the box \"Build diagram for concurrent programs\" " +
-                    "in Settings | Build, Execution, Deployment | Python debugger</html>");
-    add(myLabel);
-  }
+  public abstract void initMessage();
 }
