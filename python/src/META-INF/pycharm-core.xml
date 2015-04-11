@@ -102,7 +102,7 @@
                 anchor="bottom"
                 secondary="true"
                 icon="AllIcons.Toolwindows.ToolWindowStructure"
-                factoryClass="com.jetbrains.python.debugger.threading.tool.ThreadingLogToolWindowFactory"/>
+                factoryClass="com.jetbrains.python.debugger.concurrency.tool.ConcurrencyLogToolWindowFactory"/>
   </extensions>
 
   <actions>
