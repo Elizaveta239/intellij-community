@@ -19,6 +19,7 @@ public class GraphManager {
   private DrawElement[][] myGraphScheme;
   private int[] threadCountForRow;
   private Map<String, Integer> threadIndexToId;
+  private final Object myUpdateObject = new Object();
   private int currentMaxThread = 0;
 
   public GraphManager(PyConcurrencyLogManager logManager, ThreadingColorManager colorManager) {
@@ -71,42 +72,45 @@ public class GraphManager {
   }
 
   public void updateGraph() {
-    myGraphScheme = new DrawElement[myLogManager.getSize() + 1][];
-    threadCountForRow = new int[myLogManager.getSize() + 1];
-    List<PyThreadingEvent> myLog = myLogManager.getLog();
-    currentMaxThread = 0;
-    int i = 0;
-    for (PyThreadingEvent event: myLog) {
-      String eventThreadId = event.getThreadId();
+    synchronized (myUpdateObject) {
+      myGraphScheme = new DrawElement[myLogManager.getSize() + 1][];
+      threadCountForRow = new int[myLogManager.getSize() + 1];
+      List<PyThreadingEvent> myLog = myLogManager.getLog();
+      currentMaxThread = 0;
+      int i = 0;
+      for (PyThreadingEvent event : myLog) {
+        String eventThreadId = event.getThreadId();
 
-      if (event.isThreadEvent() && event.getType() == PyThreadingEvent.EventType.START) {
-        DrawElement element;
-        element = new EventDrawElement(myColorManager.getThreadColor(eventThreadId), new StoppedThreadState(), new RunThreadState());
-        currentMaxThread++;
-        threadIndexToId.put(eventThreadId, currentMaxThread - 1);
+        if (event.isThreadEvent() && event.getType() == PyThreadingEvent.EventType.START) {
+          DrawElement element;
+          element = new EventDrawElement(myColorManager.getThreadColor(eventThreadId), new StoppedThreadState(), new RunThreadState());
+          currentMaxThread++;
+          threadIndexToId.put(eventThreadId, currentMaxThread - 1);
 
-        myGraphScheme[i] = new DrawElement[currentMaxThread];
-        for (int j = 0; j < currentMaxThread - 1; ++j) {
-          myGraphScheme[i][j] = myGraphScheme[i - 1][j].getNextElement();
-          myGraphScheme[i][j].setColor(myGraphScheme[i - 1][j].getColor());
-        }
-        myGraphScheme[i][currentMaxThread - 1] = element;
-
-      } else {
-        int eventThreadIdInt = threadIndexToId.containsKey(eventThreadId) ? threadIndexToId.get(eventThreadId): 0;
-
-        myGraphScheme[i] = new DrawElement[currentMaxThread];
-        for (int j = 0; j < currentMaxThread; ++j) {
-          if (j != eventThreadIdInt) {
+          myGraphScheme[i] = new DrawElement[currentMaxThread];
+          for (int j = 0; j < currentMaxThread - 1; ++j) {
             myGraphScheme[i][j] = myGraphScheme[i - 1][j].getNextElement();
             myGraphScheme[i][j].setColor(myGraphScheme[i - 1][j].getColor());
           }
+          myGraphScheme[i][currentMaxThread - 1] = element;
+
         }
-        myGraphScheme[i][eventThreadIdInt] = getDrawElementForEvent(event, myGraphScheme[i - 1][eventThreadIdInt], i);
-        myGraphScheme[i][eventThreadIdInt].setColor(myColorManager.getThreadColor(eventThreadId));
+        else {
+          int eventThreadIdInt = threadIndexToId.containsKey(eventThreadId) ? threadIndexToId.get(eventThreadId) : 0;
+
+          myGraphScheme[i] = new DrawElement[currentMaxThread];
+          for (int j = 0; j < currentMaxThread; ++j) {
+            if (j != eventThreadIdInt) {
+              myGraphScheme[i][j] = myGraphScheme[i - 1][j].getNextElement();
+              myGraphScheme[i][j].setColor(myGraphScheme[i - 1][j].getColor());
+            }
+          }
+          myGraphScheme[i][eventThreadIdInt] = getDrawElementForEvent(event, myGraphScheme[i - 1][eventThreadIdInt], i);
+          myGraphScheme[i][eventThreadIdInt].setColor(myColorManager.getThreadColor(eventThreadId));
+        }
+        threadCountForRow[i] = currentMaxThread;
+        ++i;
       }
-      threadCountForRow[i] = currentMaxThread;
-      ++i;
     }
   }
 }
