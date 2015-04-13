@@ -17,9 +17,12 @@
 package com.jetbrains.python.debugger.concurrency.tool.asyncio;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.util.ui.UIUtil;
 import com.jetbrains.python.debugger.PyThreadingEvent;
 import com.jetbrains.python.debugger.concurrency.tool.StackTracePanel;
+import com.jetbrains.python.debugger.concurrency.tool.asyncio.table.AsyncioTable;
+import com.jetbrains.python.debugger.concurrency.tool.asyncio.table.AsyncioTableModel;
 import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
 import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyPanel;
 
@@ -87,16 +90,16 @@ public class AsyncioLogToolWindowPanel extends ConcurrencyPanel {
       initMessage();
       return;
     }
-    //
-    //if (myTable == null) {
-    //  myLabel.setVisible(false);
-    //
-    //  myTable = new ThreadingTable(logManager, myProject, this);
-    //  myTable.setModel(new ThreadingTableModel(logManager));
-    //  myPane = ScrollPaneFactory.createScrollPane(myTable);
-    //  add(myPane);
-    //}
-    //myTable.setModel(new ThreadingTableModel(logManager));
+
+    if (myTable == null) {
+      myLabel.setVisible(false);
+
+      myTable = new AsyncioTable((PyAsyncioLogManagerImpl)logManager, myProject, this);
+      myTable.setModel(new AsyncioTableModel((PyAsyncioLogManagerImpl)logManager));
+      myPane = ScrollPaneFactory.createScrollPane(myTable);
+      add(myPane);
+    }
+    myTable.setModel(new AsyncioTableModel((PyAsyncioLogManagerImpl)logManager));
   }
 
   @Override

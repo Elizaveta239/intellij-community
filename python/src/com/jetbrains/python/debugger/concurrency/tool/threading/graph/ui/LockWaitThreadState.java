@@ -15,7 +15,7 @@
  */
 package com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui;
 
-import com.jetbrains.python.debugger.concurrency.tool.threading.graph.GraphSettings;
+import com.jetbrains.python.debugger.concurrency.tool.GraphSettings;
 
 import java.awt.*;
 

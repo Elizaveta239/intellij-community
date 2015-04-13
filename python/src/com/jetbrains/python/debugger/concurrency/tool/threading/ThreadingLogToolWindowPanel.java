@@ -50,6 +50,7 @@ public class ThreadingLogToolWindowPanel extends ConcurrencyPanel {
     add(myLabel);
   }
 
+  @Override
   public void showStackTrace(PyThreadingEvent event) {
     StackTracePanel lockPanel = new StackTracePanel(false, myProject);
     lockPanel.buildStackTrace(event.getFrames());

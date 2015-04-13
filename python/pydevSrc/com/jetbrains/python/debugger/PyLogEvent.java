@@ -15,13 +15,17 @@
  */
 package com.jetbrains.python.debugger;
 
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.xdebugger.XSourcePosition;
+import com.intellij.xdebugger.impl.XSourcePositionImpl;
+
 import java.util.List;
 
 
 public abstract class PyLogEvent {
   protected String myFileName;
   protected Integer myLine;
-  protected String myName;
 
   public void setFileName(String fileName) {
     myFileName = fileName;
@@ -47,5 +51,10 @@ public abstract class PyLogEvent {
 
   public void setFrames(List<PyStackFrameInfo> frames) {
     myFrames = frames;
+  }
+
+  public XSourcePosition getSourcePosition() {
+    VirtualFile vFile = LocalFileSystem.getInstance().findFileByPath(getFileName());
+    return XSourcePositionImpl.create(vFile, getLine());
   }
 }

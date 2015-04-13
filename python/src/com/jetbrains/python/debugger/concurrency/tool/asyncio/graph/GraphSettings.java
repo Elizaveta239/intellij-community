@@ -13,24 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jetbrains.python.debugger;
+package com.jetbrains.python.debugger.concurrency.tool.asyncio.graph;
 
-public class PyAsyncioEvent extends PyLogEvent {
-  protected Integer myTime;
-  protected String myTaskId;
-  protected String myCoroName;
-
-  public PyAsyncioEvent(Integer time, String taskId, String coroName) {
-    myTime = time;
-    myTaskId = taskId;
-    myCoroName = coroName;
-  }
-
-  public String getTaskId() {
-    return myTaskId;
-  }
-
-  public String getCoroName() {
-    return myCoroName;
-  }
+public class GraphSettings {
+  public static int CELL_HEIGH = 24;
 }

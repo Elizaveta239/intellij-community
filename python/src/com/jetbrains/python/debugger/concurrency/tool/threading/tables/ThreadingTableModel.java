@@ -2,48 +2,24 @@
 package com.jetbrains.python.debugger.concurrency.tool.threading.tables;
 
 import com.jetbrains.python.debugger.PyThreadingEvent;
+import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyTableModel;
 import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.GraphCell;
 import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingNamesManager;
 
-import javax.swing.table.AbstractTableModel;
-
-public class ThreadingTableModel extends AbstractTableModel {
-  public static final int THREAD_COLUMN = 0;
-  public static final int GRAPH_COLUMN = 1;
-  public static final int EVENT_COLUMN = 2;
-
-  public static final int COLUMN_COUNT = EVENT_COLUMN + 1;
-
-  private static final String[] COLUMN_NAMES = {"Thread", "Graph", "Event"};
-
-  private final PyThreadingLogManagerImpl myLogManager;
+public class ThreadingTableModel extends ConcurrencyTableModel {
   private final ThreadingNamesManager myThreadingNamesManager;
 
   public ThreadingTableModel(PyThreadingLogManagerImpl logManager) {
-    myLogManager = logManager;
+    super(logManager);
     myThreadingNamesManager = new ThreadingNamesManager();
-  }
-
-  @Override
-  public String getColumnName(int column) {
-    return COLUMN_NAMES[column];
-  }
-
-  @Override
-  public int getRowCount() {
-    return myLogManager.getSize();
-  }
-
-  @Override
-  public int getColumnCount() {
-    return COLUMN_COUNT;
+    COLUMN_NAMES = new String[]{"Thread", "Graph", "Event"};
   }
 
   @Override
   public Class<?> getColumnClass(int columnIndex) {
     switch (columnIndex) {
-      case THREAD_COLUMN:
+      case TASK_COLUMN:
         return ThreadCell.class;
       case GRAPH_COLUMN:
         return GraphCell.class;
@@ -56,9 +32,9 @@ public class ThreadingTableModel extends AbstractTableModel {
 
   @Override
   public Object getValueAt(int rowIndex, int columnIndex) {
-    PyThreadingEvent event = myLogManager.getEventAt(rowIndex);
+    PyThreadingEvent event = (PyThreadingEvent)myLogManager.getEventAt(rowIndex);
     switch (columnIndex) {
-      case THREAD_COLUMN:
+      case TASK_COLUMN:
         return new ThreadCell(event.getThreadName());
       case GRAPH_COLUMN:
         return new GraphCell();

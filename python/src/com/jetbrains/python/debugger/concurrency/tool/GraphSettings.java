@@ -1,5 +1,5 @@
 
-package com.jetbrains.python.debugger.concurrency.tool.threading.graph;
+package com.jetbrains.python.debugger.concurrency.tool;
 
 import java.awt.*;
 

@@ -13,24 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jetbrains.python.debugger;
+package com.jetbrains.python.debugger.concurrency.tool.asyncio.table;
 
-public class PyAsyncioEvent extends PyLogEvent {
-  protected Integer myTime;
-  protected String myTaskId;
-  protected String myCoroName;
+import com.intellij.openapi.project.Project;
+import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyPanel;
+import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyTable;
+import com.jetbrains.python.debugger.concurrency.tool.asyncio.PyAsyncioLogManagerImpl;
 
-  public PyAsyncioEvent(Integer time, String taskId, String coroName) {
-    myTime = time;
-    myTaskId = taskId;
-    myCoroName = coroName;
-  }
-
-  public String getTaskId() {
-    return myTaskId;
-  }
-
-  public String getCoroName() {
-    return myCoroName;
+public class AsyncioTable extends ConcurrencyTable {
+  public AsyncioTable(PyAsyncioLogManagerImpl logManager, Project project, ConcurrencyPanel panel) {
+    super(logManager, project, panel);
   }
 }

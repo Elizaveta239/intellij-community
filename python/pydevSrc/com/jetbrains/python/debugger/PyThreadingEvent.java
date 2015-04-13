@@ -11,6 +11,7 @@ public abstract class PyThreadingEvent extends PyLogEvent {
   protected Integer myTime;
   protected String myThreadId;
   protected EventType myType;
+  protected String myName;
 
   public PyThreadingEvent(Integer time, String threadId, String name) {
     myTime = time;

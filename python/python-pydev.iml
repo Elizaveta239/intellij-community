@@ -12,6 +12,6 @@
     <orderEntry type="library" name="Guava" level="project" />
     <orderEntry type="library" name="xpp3-1.1.4-min" level="project" />
     <orderEntry type="module" module-name="util" />
+    <orderEntry type="module" module-name="xdebugger-impl" />
   </component>
 </module>
-

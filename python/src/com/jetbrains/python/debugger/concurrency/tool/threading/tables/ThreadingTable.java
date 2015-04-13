@@ -5,35 +5,25 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.AppUIUtil;
 import com.intellij.ui.table.JBTable;
 import com.intellij.xdebugger.XSourcePosition;
+import com.jetbrains.python.debugger.PyThreadingEvent;
+import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyTable;
 import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.GraphManager;
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.GraphCell;
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.GraphCellRenderer;
-import com.jetbrains.python.debugger.concurrency.tool.threading.graph.GraphSettings;
+import com.jetbrains.python.debugger.concurrency.tool.GraphSettings;
 import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingColorManager;
-import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingLogToolWindowPanel;
 import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyPanel;
-import org.jetbrains.annotations.NotNull;
 
-import javax.swing.table.TableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class ThreadingTable extends JBTable {
+public class ThreadingTable extends ConcurrencyTable {
   private final ThreadingColorManager myColorManager;
-  private final PyThreadingLogManagerImpl myLogManager;
   private final GraphManager myGraphManager;
-  private final Project myProject;
-  private final ThreadingLogToolWindowPanel myPanel;
-
-  private boolean myColumnsInitialized = false;
 
   public ThreadingTable(PyThreadingLogManagerImpl logManager, Project project, ConcurrencyPanel panel) {
-    super();
-
-    myLogManager = logManager;
-    myProject = project;
-    myPanel = (ThreadingLogToolWindowPanel)panel;
+    super(logManager, project, panel);
     myColorManager = new ThreadingColorManager();
     myGraphManager = new GraphManager(myLogManager, myColorManager);
     setDefaultRenderer(GraphCell.class, new GraphCellRenderer(myLogManager, myGraphManager));
@@ -48,13 +38,12 @@ public class ThreadingTable extends JBTable {
           JBTable target = (JBTable)e.getSource();
           int row = target.getSelectedRow();
           if (row != -1) {
-            navigateToSource(myLogManager.getSourcePositionForEventNumber(row));
-            myPanel.showStackTrace(myLogManager.getEventAt(row));
+            navigateToSource(myLogManager.getEventAt(row).getSourcePosition());
+            myPanel.showStackTrace((PyThreadingEvent)myLogManager.getEventAt(row));
           }
         }
       }
     });
-
   }
 
   private void navigateToSource(final XSourcePosition sourcePosition) {
@@ -65,15 +54,6 @@ public class ThreadingTable extends JBTable {
           sourcePosition.createNavigatable(myProject).navigate(true);
         }
       }, myProject.getDisposed());
-    }
-  }
-
-  @Override
-  public void setModel(@NotNull TableModel model) {
-    super.setModel(model);
-    if (!myColumnsInitialized) {
-      myColumnsInitialized = true;
-      //setColumnSizes();
     }
   }
 }
