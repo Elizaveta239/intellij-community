@@ -4,25 +4,13 @@ package com.jetbrains.python.debugger;
 
 import java.util.List;
 
-public abstract class PyThreadingEvent {
+public abstract class PyThreadingEvent extends PyLogEvent {
   public enum EventType {
     CREATE, ACQUIRE_BEGIN, ACQUIRE_END, RELEASE, START, JOIN, STOP
   };
   protected Integer myTime;
   protected String myThreadId;
-  protected String myName;
   protected EventType myType;
-  protected String myFileName;
-  protected Integer myLine;
-  protected List<PyStackFrameInfo> myFrames;
-
-  public List<PyStackFrameInfo> getFrames() {
-    return myFrames;
-  }
-
-  public void setFrames(List<PyStackFrameInfo> frames) {
-    myFrames = frames;
-  }
 
   public PyThreadingEvent(Integer time, String threadId, String name) {
     myTime = time;
@@ -32,22 +20,6 @@ public abstract class PyThreadingEvent {
 
   public void setType(EventType type) {
     myType = type;
-  }
-
-  public void setFileName(String fileName) {
-    myFileName = fileName;
-  }
-
-  public String getFileName() {
-    return myFileName;
-  }
-
-  public void setLine(Integer line) {
-    myLine = line;
-  }
-
-  public Integer getLine() {
-    return myLine;
   }
 
   public String getThreadId() {

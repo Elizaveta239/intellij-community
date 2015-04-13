@@ -549,8 +549,8 @@ public class RemoteDebugger implements ProcessDebugger {
       myDebugProcess.recordSignature(signature);
     }
 
-    private void recordThreadingEvent(PyThreadingEvent event) {
-      myDebugProcess.recordThreadingEvent(event);
+    private void recordThreadingEvent(PyLogEvent event) {
+      myDebugProcess.recordLogEvent(event);
     }
 
     // todo: extract response processing

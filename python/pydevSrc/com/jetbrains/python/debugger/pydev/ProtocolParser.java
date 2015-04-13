@@ -41,61 +41,84 @@ public class ProtocolParser {
     return signature;
   }
 
-  public static PyThreadingEvent parseThreadingEvent(String payload,
+
+  public static PyLogEvent parseThreadingEvent(String payload,
                                                      final PyPositionConverter positionConverter) throws PyDebuggerException {
     final XppReader reader = openReader(payload, true);
     reader.moveDown();
-    if (!"threading_event".equals(reader.getNodeName())) {
-      throw new PyDebuggerException("Expected <threading_event>, found " + reader.getNodeName());
-    }
-    final Integer time = Integer.parseInt(readString(reader, "time", ""));
-    final String name = readString(reader, "name", "");
-    final String thread_id = readString(reader, "thread_id", "");
-    final String type = readString(reader, "type", "");
-    PyThreadingEvent threadingEvent;
-    if (type.equals("lock")) {
-      String lock_id = readString(reader, "lock_id", "0");
-      threadingEvent = new PyLockEvent(time, thread_id, name, lock_id);
-    } else if (type.equals("thread")) {
-      threadingEvent = new PyThreadEvent(time, thread_id, name);
-    } else {
-      throw new PyDebuggerException("Unknown type " + type);
-    }
+    String eventName = reader.getNodeName();
 
-    final String event = readString(reader, "event", "");
-    if (event.equals("__init__")) {
-      threadingEvent.setType(PyThreadingEvent.EventType.CREATE);
-    } else if (event.equals("start")) {
-      threadingEvent.setType(PyThreadingEvent.EventType.START);
-    } else if (event.equals("join")) {
-      threadingEvent.setType(PyThreadingEvent.EventType.JOIN);
-    } else if (event.equals("stop")) {
-      threadingEvent.setType(PyThreadingEvent.EventType.STOP);
-    } else if (event.equals("acquire_begin") || event.equals("__enter___begin")) {
-      threadingEvent.setType(PyThreadingEvent.EventType.ACQUIRE_BEGIN);
-    }  else if (event.equals("acquire_end") || event.equals("__enter___end")) {
+    if (eventName.equals("threading_event")) {
+      final Integer time = Integer.parseInt(readString(reader, "time", ""));
+      final String name = readString(reader, "name", "");
+      final String thread_id = readString(reader, "thread_id", "");
+      final String type = readString(reader, "type", "");
+      PyThreadingEvent threadingEvent;
+      if (type.equals("lock")) {
+        String lock_id = readString(reader, "lock_id", "0");
+        threadingEvent = new PyLockEvent(time, thread_id, name, lock_id);
+      }
+      else if (type.equals("thread")) {
+        threadingEvent = new PyThreadEvent(time, thread_id, name);
+      }
+      else {
+        throw new PyDebuggerException("Unknown type " + type);
+      }
+
+      final String eventType = readString(reader, "event", "");
+      if (eventType.equals("__init__")) {
+        threadingEvent.setType(PyThreadingEvent.EventType.CREATE);
+      }
+      else if (eventType.equals("start")) {
+        threadingEvent.setType(PyThreadingEvent.EventType.START);
+      }
+      else if (eventType.equals("join")) {
+        threadingEvent.setType(PyThreadingEvent.EventType.JOIN);
+      }
+      else if (eventType.equals("stop")) {
+        threadingEvent.setType(PyThreadingEvent.EventType.STOP);
+      }
+      else if (eventType.equals("acquire_begin") || eventType.equals("__enter___begin")) {
+        threadingEvent.setType(PyThreadingEvent.EventType.ACQUIRE_BEGIN);
+      }
+      else if (eventType.equals("acquire_end") || eventType.equals("__enter___end")) {
         threadingEvent.setType(PyThreadingEvent.EventType.ACQUIRE_END);
-    } else if (event.startsWith("release") || event.startsWith("__exit__")) {
-      // we record release begin and end on the Python side, but it is not important info
-      // for user. Maybe use it later
-      threadingEvent.setType(PyThreadingEvent.EventType.RELEASE);
-    } else {
-      throw new PyDebuggerException("Unknown event " + event);
-    }
+      }
+      else if (eventType.startsWith("release") || eventType.startsWith("__exit__")) {
+        // we record release begin and end on the Python side, but it is not important info
+        // for user. Maybe use it later
+        threadingEvent.setType(PyThreadingEvent.EventType.RELEASE);
+      }
+      else {
+        throw new PyDebuggerException("Unknown event " + eventType);
+      }
 
-    threadingEvent.setFileName(readString(reader, "file", ""));
-    threadingEvent.setLine(Integer.parseInt(readString(reader, "line", "")) - 1);
-    reader.moveUp();
-
-    final List<PyStackFrameInfo> frames = new LinkedList<PyStackFrameInfo>();
-    while (reader.hasMoreChildren()) {
-      reader.moveDown();
-      frames.add(parseFrame(reader, thread_id, positionConverter));
+      threadingEvent.setFileName(readString(reader, "file", ""));
+      threadingEvent.setLine(Integer.parseInt(readString(reader, "line", "")) - 1);
       reader.moveUp();
-    }
-    threadingEvent.setFrames(frames);
 
-    return threadingEvent;
+      final List<PyStackFrameInfo> frames = new LinkedList<PyStackFrameInfo>();
+      while (reader.hasMoreChildren()) {
+        reader.moveDown();
+        frames.add(parseFrame(reader, thread_id, positionConverter));
+        reader.moveUp();
+      }
+      threadingEvent.setFrames(frames);
+      return threadingEvent;
+
+    } else if (eventName.equals("asyncio_event")) {
+      PyAsyncioEvent asyncioEvent;
+      final Integer time = Integer.parseInt(readString(reader, "time", ""));
+      final String taskName = readString(reader, "task_name", "");
+      final String coroName = readString(reader, "coro_name", "");
+      asyncioEvent = new PyAsyncioEvent(time, taskName, coroName );
+      asyncioEvent.setFileName(readString(reader, "file", ""));
+      asyncioEvent.setLine(Integer.parseInt(readString(reader, "line", "")) - 1);
+      return asyncioEvent;
+
+    } else {
+      throw new PyDebuggerException("Expected <threading_event> or <asyncio_event>, found " + reader.getNodeName());
+    }
   }
 
   public static String parseSourceContent(String payload) throws PyDebuggerException {

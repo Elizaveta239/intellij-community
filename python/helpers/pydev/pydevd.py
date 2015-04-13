@@ -84,8 +84,8 @@ import pydevd_traceproperty
 from _pydev_imps import _pydev_time as time, _pydev_thread
 
 import _pydev_threading as threading
-from pydevd_thread_analyser.pydevd_thread_wrappers import wrap_threads, LockWrapper
-from pydevd_thread_analyser.pydevd_thread_logger import ThreadingLogger
+from pydevd_concurrency_analyser.pydevd_thread_wrappers import wrap_threads, LockWrapper
+from pydevd_concurrency_analyser.pydevd_concurrency_logger import ThreadingLogger, AsyncioLogger
 
 import os
 import atexit
@@ -1472,6 +1472,9 @@ class PyDB:
             if self.thread_analyser is not None:
                 self.thread_analyser.log_event(frame)
 
+            if self.asyncio_analyser is not None:
+                self.asyncio_analyser.log_event(frame)
+
             is_file_to_ignore = DictContains(DONT_TRACE, base) #we don't want to debug threading or anything related to pydevd
 
             #print('trace_dispatch', base, frame.f_lineno, event, frame.f_code.co_name, is_file_to_ignore)
@@ -1692,6 +1695,7 @@ def processCommandLine(argv):
     setup['multiprocess'] = False # Used by PyDev (creates new connection to ide)
     setup['save-signatures'] = False
     setup['save-threading'] = False
+    setup['save-asyncio'] = False
     setup['print-in-debugger-startup'] = False
     setup['cmd-line'] = False
     i = 0
@@ -1734,6 +1738,9 @@ def processCommandLine(argv):
         elif argv[i] == '--save-threading':
             del argv[i]
             setup['save-threading'] = True
+        elif argv[i] == '--save-asyncio':
+            del argv[i]
+            setup['save-asyncio'] = True
         elif argv[i] == '--print-in-debugger-startup':
             del argv[i]
             setup['print-in-debugger-startup'] = True
@@ -2220,6 +2227,9 @@ if __name__ == '__main__':
 
         if setup['save-threading']:
             debugger.thread_analyser = ThreadingLogger()
+
+        if setup['save-asyncio']:
+            debugger.asyncio_analyser = AsyncioLogger()
 
         try:
             debugger.connect(host, port)

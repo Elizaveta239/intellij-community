@@ -1,7 +1,7 @@
 
 from pydevd_constants import DictContains, GetThreadId
 import pydevd_file_utils
-from pydevd_thread_analyser.pydevd_thread_wrappers import LockWrapper
+from pydevd_concurrency_analyser.pydevd_thread_wrappers import LockWrapper
 import pydevd_vars
 import time
 
@@ -28,6 +28,12 @@ import traceback
 
 import time
 cur_time = lambda: int(round(time.time() * 10000))
+
+
+try:
+    import asyncio
+except:
+    pass
 
 
 class ThreadingLogger:
@@ -168,3 +174,83 @@ class ThreadingLogger:
 
         except Exception:
             traceback.print_exc()
+
+
+class NameManager():
+    def __init__(self, name_prefix):
+        self.tasks = {}
+        self.last = 0
+        self.prefix = name_prefix
+
+    def get(self, id):
+        if id not in self.tasks:
+            self.last += 1
+            self.tasks[id] = self.prefix + "-" + str(self.last)
+        return self.tasks[id]
+
+
+class AsyncioLogger:
+    def __init__(self):
+        self.task_mgr = NameManager("Task")
+        self.coro_mgr = NameManager("Coro")
+        self.start_time = cur_time()
+
+    def get_task_id(self, frame):
+        while frame is not None:
+            if DictContains(frame.f_locals, "self"):
+                self_obj = frame.f_locals["self"]
+                if isinstance(self_obj,  asyncio.Task):
+                    method_name = frame.f_code.co_name
+                    if method_name == "_step":
+                        return id(self_obj)
+            frame = frame.f_back
+        return None
+
+    def log_event(self, frame):
+        self_obj = None
+        event_time = event_time = cur_time() - self.start_time
+
+
+        if DictContains(frame.f_locals, "self"):
+            self_obj = frame.f_locals["self"]
+
+        method_name = frame.f_code.co_name
+        if isinstance(self_obj, asyncio.base_events.BaseEventLoop):
+            if method_name == "_run_once":
+                print("Loop iteration")
+
+        if not hasattr(frame, "f_back") or frame.f_back is None:
+            return
+
+        back = frame.f_back
+        method_name = back.f_code.co_name
+
+        if DictContains(back.f_locals, "self"):
+            self_obj = back.f_locals["self"]
+            if isinstance(self_obj, asyncio.tasks.CoroWrapper):
+                if method_name in ("__next__", "send"):
+                    coro_name = self.coro_mgr.get(str(id(self_obj)))
+                    task_id = self.get_task_id(frame)
+                    task_name = self.task_mgr.get(str(task_id))
+                    print("%s %s %s %s" % (task_name, coro_name, frame.f_code.co_filename, frame.f_lineno))
+                    self.send_message(event_time, task_name, coro_name, frame.f_code.co_filename, frame.f_lineno)
+
+
+    def send_message(self, time, task_name, coro_name, file, line):
+        dbg = GlobalDebuggerHolder.globalDbg
+        cmdTextList = ['<xml>']
+
+        cmdTextList.append('<asyncio_event')
+        cmdTextList.append(' time="%s"' % pydevd_vars.makeValidXmlValue(str(time)))
+        cmdTextList.append(' task_name="%s"' % pydevd_vars.makeValidXmlValue(task_name))
+        cmdTextList.append(' coro_name="%s"' % pydevd_vars.makeValidXmlValue(coro_name))
+        cmdTextList.append(' file="%s"' % pydevd_vars.makeValidXmlValue(file))
+        cmdTextList.append(' line="%s"' % pydevd_vars.makeValidXmlValue(str(line)))
+        cmdTextList.append('></asyncio_event>')
+
+        cmdTextList.append('</xml>')
+
+        text = ''.join(cmdTextList)
+        dbg.writer.addCommand(NetCommand(144, 0, text))
+
+
