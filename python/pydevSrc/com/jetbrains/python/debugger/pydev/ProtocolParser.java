@@ -111,7 +111,7 @@ public class ProtocolParser {
       final Integer time = Integer.parseInt(readString(reader, "time", ""));
       final String taskName = readString(reader, "task_name", "");
       final String coroName = readString(reader, "coro_name", "");
-      asyncioEvent = new PyAsyncioEvent(time, taskName, coroName );
+      asyncioEvent = new PyCoroEvent(time, taskName, coroName );
       asyncioEvent.setFileName(readString(reader, "file", ""));
       asyncioEvent.setLine(Integer.parseInt(readString(reader, "line", "")) - 1);
       return asyncioEvent;

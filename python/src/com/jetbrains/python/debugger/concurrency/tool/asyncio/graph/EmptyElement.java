@@ -13,24 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jetbrains.python.debugger;
+package com.jetbrains.python.debugger.concurrency.tool.asyncio.graph;
 
-public class PyAsyncioEvent extends PyLogEvent {
-  protected Integer myTime;
-  protected String myTaskId;
-  protected String myEventId;
+import java.awt.*;
 
-  public PyAsyncioEvent(Integer time, String taskId, String eventId) {
-    myTime = time;
-    myTaskId = taskId;
-    myEventId = eventId;
+public class EmptyElement extends DrawElement {
+
+  public EmptyElement(Color color) {
+    super(color);
   }
 
-  public String getTaskId() {
-    return myTaskId;
-  }
-
-  public String getEventId() {
-    return myEventId;
+  @Override
+  public DrawElement getNextElement() {
+    return this;
   }
 }

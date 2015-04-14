@@ -15,22 +15,14 @@
  */
 package com.jetbrains.python.debugger;
 
-public class PyAsyncioEvent extends PyLogEvent {
-  protected Integer myTime;
-  protected String myTaskId;
-  protected String myEventId;
+public class PyCoroEvent extends PyAsyncioEvent {
+  protected PyCoroEvent myParent;
 
-  public PyAsyncioEvent(Integer time, String taskId, String eventId) {
-    myTime = time;
-    myTaskId = taskId;
-    myEventId = eventId;
+  public PyCoroEvent(Integer time, String taskId, String coroName) {
+    super(time, taskId, coroName);
   }
 
-  public String getTaskId() {
-    return myTaskId;
-  }
-
-  public String getEventId() {
-    return myEventId;
+  public void setParent(PyAsyncioEvent parent) {
+    myParent = (PyCoroEvent)parent;
   }
 }

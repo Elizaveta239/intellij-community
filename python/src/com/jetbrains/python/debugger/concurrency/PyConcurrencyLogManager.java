@@ -12,7 +12,8 @@ import java.util.List;
 
 public abstract class PyConcurrencyLogManager<T> {
   protected List<T> myLog;
-  protected List<Listener> myListeners;
+  private final Object myListenersObject = new Object();
+  private List<Listener> myListeners = new ArrayList<Listener>();
   protected XDebugSession lastSession;
   protected Project myProject;
 
@@ -82,13 +83,13 @@ public abstract class PyConcurrencyLogManager<T> {
   }
 
   public void registerListener(@NotNull Listener listener) {
-    synchronized (myListeners) {
+    synchronized (myListenersObject) {
       myListeners.add(listener);
     }
   }
 
   public void notifyListeners() {
-    synchronized (myListeners) {
+    synchronized (myListenersObject) {
       for (Listener listener : myListeners) {
         listener.logChanged();
       }

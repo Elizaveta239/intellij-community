@@ -3,10 +3,6 @@ package com.jetbrains.python.debugger.concurrency.tool.threading;
 
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.xdebugger.XSourcePosition;
-import com.intellij.xdebugger.impl.XSourcePositionImpl;
 import com.jetbrains.python.debugger.PyLockEvent;
 import com.jetbrains.python.debugger.PyThreadingEvent;
 import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
@@ -14,7 +10,6 @@ import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.LockOwn
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.LockWaitThreadState;
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.RunThreadState;
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.ThreadState;
-import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingNamesManager;
 
 import java.util.ArrayList;
 
@@ -28,7 +23,6 @@ public class PyThreadingLogManagerImpl extends PyConcurrencyLogManager<PyThreadi
   public PyThreadingLogManagerImpl(Project project) {
     myProject = project;
     myLog = new ArrayList<PyThreadingEvent>();
-    myListeners = new ArrayList<Listener>();
     myLockManager = new ThreadingNamesManager();
   }
 
@@ -62,13 +56,6 @@ public class PyThreadingLogManagerImpl extends PyConcurrencyLogManager<PyThreadi
       return new LockWaitThreadState();
     }
     return new RunThreadState();
-  }
-
-
-  public XSourcePosition getSourcePositionForEventNumber(int num) {
-    final PyThreadingEvent event = myLog.get(num);
-    VirtualFile vFile = LocalFileSystem.getInstance().findFileByPath(event.getFileName());
-    return XSourcePositionImpl.create(vFile, event.getLine());
   }
 
 }

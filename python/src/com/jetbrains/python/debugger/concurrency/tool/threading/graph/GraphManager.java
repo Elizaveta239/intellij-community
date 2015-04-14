@@ -28,7 +28,7 @@ public class GraphManager {
     threadIndexToId = new HashMap<String, Integer>();
     updateGraph();
 
-    myLogManager.registerListener(new PyThreadingLogManagerImpl.Listener() {
+    myLogManager.registerListener(new PyConcurrencyLogManager.Listener() {
       @Override
       public void logChanged() {
         updateGraph();

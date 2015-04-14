@@ -35,6 +35,5 @@ public class PyAsyncioLogManagerImpl extends PyConcurrencyLogManager<PyAsyncioEv
   public PyAsyncioLogManagerImpl(Project project) {
     myProject = project;
     myLog = new ArrayList<PyAsyncioEvent>();
-    myListeners = new ArrayList<Listener>();
   }
 }
