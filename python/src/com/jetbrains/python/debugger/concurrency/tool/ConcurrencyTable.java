@@ -21,13 +21,12 @@ import com.intellij.ui.table.JBTable;
 import com.intellij.xdebugger.XSourcePosition;
 import com.jetbrains.python.debugger.PyLogEvent;
 import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
-import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingColorManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.table.TableModel;
 
 public class ConcurrencyTable extends JBTable {
-  protected ThreadingColorManager myColorManager;
+  protected ConcurrencyColorManager myColorManager;
   protected PyConcurrencyLogManager<PyLogEvent> myLogManager;
   protected Project myProject;
   protected ConcurrencyPanel myPanel;
@@ -38,13 +37,12 @@ public class ConcurrencyTable extends JBTable {
     myLogManager = logManager;
     myProject = project;
     myPanel = panel;
-    myColorManager = new ThreadingColorManager();
+    myColorManager = new ConcurrencyColorManager();
     setRowHeight(GraphSettings.CELL_HEIGH);
     setShowHorizontalLines(false);
-
   }
 
-  private void navigateToSource(final XSourcePosition sourcePosition) {
+  protected void navigateToSource(final XSourcePosition sourcePosition) {
     if (sourcePosition != null) {
       AppUIUtil.invokeOnEdt(new Runnable() {
         @Override

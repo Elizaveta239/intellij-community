@@ -32,7 +32,7 @@ public class AsyncioTableModel extends ConcurrencyTableModel {
       case TASK_COLUMN:
         return TaskCell.class;
       case GRAPH_COLUMN:
-        return TaskCell.class;
+        return String.class;
       case EVENT_COLUMN:
         return String.class;
       default:
@@ -50,13 +50,7 @@ public class AsyncioTableModel extends ConcurrencyTableModel {
         return "";
       case EVENT_COLUMN:
         //return myThreadingNamesManager.getFullEventName(event);
-        StringBuilder sb = new StringBuilder();
-        sb.append(event.getCoroName());
-        sb.append(" ");
-        sb.append(event.getFileName());
-        sb.append(" ");
-        sb.append(event.getLine());
-        return sb.toString();
+        return event.getCoroName();
       default:
         return null;
     }

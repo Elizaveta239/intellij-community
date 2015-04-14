@@ -4,6 +4,7 @@ package com.jetbrains.python.debugger.concurrency.tool;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
+import com.jetbrains.python.debugger.PyLogEvent;
 import com.jetbrains.python.debugger.PyThreadingEvent;
 import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
 
@@ -17,12 +18,10 @@ public abstract class ConcurrencyPanel extends SimpleToolWindowPanel implements 
   public ConcurrencyPanel(boolean vertical, Project project) {
     super(vertical);
     myProject = project;
-
-    initMessage();
   }
 
   public abstract void initMessage();
 
-  public abstract void showStackTrace(PyThreadingEvent event);
+  public abstract void showStackTrace(PyLogEvent event);
 
 }

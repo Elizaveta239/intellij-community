@@ -12,19 +12,19 @@ import com.jetbrains.python.debugger.concurrency.tool.threading.graph.GraphManag
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.GraphCell;
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.GraphCellRenderer;
 import com.jetbrains.python.debugger.concurrency.tool.GraphSettings;
-import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingColorManager;
+import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyColorManager;
 import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyPanel;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class ThreadingTable extends ConcurrencyTable {
-  private final ThreadingColorManager myColorManager;
+  private final ConcurrencyColorManager myColorManager;
   private final GraphManager myGraphManager;
 
   public ThreadingTable(PyThreadingLogManagerImpl logManager, Project project, ConcurrencyPanel panel) {
     super(logManager, project, panel);
-    myColorManager = new ThreadingColorManager();
+    myColorManager = new ConcurrencyColorManager();
     myGraphManager = new GraphManager(myLogManager, myColorManager);
     setDefaultRenderer(GraphCell.class, new GraphCellRenderer(myLogManager, myGraphManager));
     setDefaultRenderer(ThreadCell.class, new ThreadCellRenderer(myColorManager, myLogManager));
@@ -46,14 +46,4 @@ public class ThreadingTable extends ConcurrencyTable {
     });
   }
 
-  private void navigateToSource(final XSourcePosition sourcePosition) {
-    if (sourcePosition != null) {
-      AppUIUtil.invokeOnEdt(new Runnable() {
-        @Override
-        public void run() {
-          sourcePosition.createNavigatable(myProject).navigate(true);
-        }
-      }, myProject.getDisposed());
-    }
-  }
 }

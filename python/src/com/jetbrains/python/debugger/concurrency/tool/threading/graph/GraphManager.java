@@ -7,7 +7,7 @@ import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
 import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.*;
 import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.elements.*;
-import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingColorManager;
+import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyColorManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +15,14 @@ import java.util.Map;
 
 public class GraphManager {
   private final PyThreadingLogManagerImpl myLogManager;
-  private final ThreadingColorManager myColorManager;
+  private final ConcurrencyColorManager myColorManager;
   private DrawElement[][] myGraphScheme;
   private int[] threadCountForRow;
   private Map<String, Integer> threadIndexToId;
   private final Object myUpdateObject = new Object();
   private int currentMaxThread = 0;
 
-  public GraphManager(PyConcurrencyLogManager logManager, ThreadingColorManager colorManager) {
+  public GraphManager(PyConcurrencyLogManager logManager, ConcurrencyColorManager colorManager) {
     myLogManager = (PyThreadingLogManagerImpl)logManager;
     myColorManager = colorManager;
     threadIndexToId = new HashMap<String, Integer>();
@@ -83,7 +83,7 @@ public class GraphManager {
 
         if (event.isThreadEvent() && event.getType() == PyThreadingEvent.EventType.START) {
           DrawElement element;
-          element = new EventDrawElement(myColorManager.getThreadColor(eventThreadId), new StoppedThreadState(), new RunThreadState());
+          element = new EventDrawElement(myColorManager.getItemColor(eventThreadId), new StoppedThreadState(), new RunThreadState());
           currentMaxThread++;
           threadIndexToId.put(eventThreadId, currentMaxThread - 1);
 
@@ -106,7 +106,7 @@ public class GraphManager {
             }
           }
           myGraphScheme[i][eventThreadIdInt] = getDrawElementForEvent(event, myGraphScheme[i - 1][eventThreadIdInt], i);
-          myGraphScheme[i][eventThreadIdInt].setColor(myColorManager.getThreadColor(eventThreadId));
+          myGraphScheme[i][eventThreadIdInt].setColor(myColorManager.getItemColor(eventThreadId));
         }
         threadCountForRow[i] = currentMaxThread;
         ++i;

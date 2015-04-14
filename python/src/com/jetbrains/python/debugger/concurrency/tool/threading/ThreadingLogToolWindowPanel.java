@@ -4,6 +4,7 @@ package com.jetbrains.python.debugger.concurrency.tool.threading;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.util.ui.UIUtil;
+import com.jetbrains.python.debugger.PyLogEvent;
 import com.jetbrains.python.debugger.PyThreadingEvent;
 import com.jetbrains.python.debugger.concurrency.tool.StackTracePanel;
 import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyPanel;
@@ -35,6 +36,7 @@ public class ThreadingLogToolWindowPanel extends ConcurrencyPanel {
       }
     });
 
+    initMessage();
     buildLog();
   }
 
@@ -51,7 +53,7 @@ public class ThreadingLogToolWindowPanel extends ConcurrencyPanel {
   }
 
   @Override
-  public void showStackTrace(PyThreadingEvent event) {
+  public void showStackTrace(PyLogEvent event) {
     StackTracePanel lockPanel = new StackTracePanel(false, myProject);
     lockPanel.buildStackTrace(event.getFrames());
     splitWindow(lockPanel);

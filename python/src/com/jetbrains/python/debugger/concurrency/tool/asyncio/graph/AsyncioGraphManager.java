@@ -15,6 +15,5 @@
  */
 package com.jetbrains.python.debugger.concurrency.tool.asyncio.graph;
 
-public class GraphSettings {
-  public static int CELL_HEIGH = 24;
+public class AsyncioGraphManager {
 }

@@ -28,6 +28,10 @@ public class PyAsyncioLogManagerImpl extends PyConcurrencyLogManager<PyAsyncioEv
     return ServiceManager.getService(project, PyAsyncioLogManagerImpl.class);
   }
 
+  public String getTaskIdForEventAt(int index) {
+    return myLog.get(index).getTaskId();
+  }
+
   public PyAsyncioLogManagerImpl(Project project) {
     myProject = project;
     myLog = new ArrayList<PyAsyncioEvent>();

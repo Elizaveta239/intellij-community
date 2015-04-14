@@ -19,6 +19,7 @@ package com.jetbrains.python.debugger.concurrency.tool.asyncio;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.util.ui.UIUtil;
+import com.jetbrains.python.debugger.PyLogEvent;
 import com.jetbrains.python.debugger.PyThreadingEvent;
 import com.jetbrains.python.debugger.concurrency.tool.StackTracePanel;
 import com.jetbrains.python.debugger.concurrency.tool.asyncio.table.AsyncioTable;
@@ -51,6 +52,7 @@ public class AsyncioLogToolWindowPanel extends ConcurrencyPanel {
       }
     });
 
+    initMessage();
     buildLog();
   }
 
@@ -66,10 +68,11 @@ public class AsyncioLogToolWindowPanel extends ConcurrencyPanel {
     add(myLabel);
   }
 
-  public void showStackTrace(PyThreadingEvent event) {
-    StackTracePanel lockPanel = new StackTracePanel(false, myProject);
-    lockPanel.buildStackTrace(event.getFrames());
-    splitWindow(lockPanel);
+  @Override
+  public void showStackTrace(PyLogEvent event) {
+    //StackTracePanel lockPanel = new StackTracePanel(false, myProject);
+    //lockPanel.buildStackTrace(event.getFrames());
+    //splitWindow(lockPanel);
   }
 
   public void splitWindow(JComponent component) {
