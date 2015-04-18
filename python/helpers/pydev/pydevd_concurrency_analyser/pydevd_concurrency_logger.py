@@ -20,7 +20,7 @@ threadingCurrentThread = threading.currentThread
 DONT_TRACE_THREADING = ['threading.py', 'pydevd.py']
 INNER_METHODS = ['_stop']
 INNER_FILES = ['threading.py']
-THREAD_METHODS = ['start', '_stop']
+THREAD_METHODS = ['start', '_stop', 'join']
 LOCK_METHODS = ['acquire', 'release', '__enter__', '__exit__']
 
 from pydevd_comm import GlobalDebuggerHolder, NetCommand
@@ -137,10 +137,11 @@ class ThreadingLogger:
                             # TODO: Python 2
                             if back_base in INNER_FILES and \
                                             back.f_code.co_name == "_wait_for_tstate_lock":
-                                real_method = "join"
                                 back = back.f_back.f_back
-                            else:
-                                real_method = "stop"
+                            real_method = "stop"
+                        elif real_method == "join":
+                            # join called in the current thread
+                            thread_id = GetThreadId(t)
                         self.send_message(event_time, self_obj.getName(), thread_id, "thread",
                         real_method, back.f_code.co_filename, back.f_lineno, back)
                         # print(event_time, self_obj.getName(), thread_id, "thread",

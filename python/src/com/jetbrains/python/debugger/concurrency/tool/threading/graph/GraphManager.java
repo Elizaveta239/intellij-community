@@ -57,7 +57,7 @@ public class GraphManager {
       case START:
         return new EventDrawElement(null, new StoppedThreadState(), new RunThreadState());
       case JOIN:
-        return new EventDrawElement(null, previousElement.getAfter(), new StoppedThreadState());
+        return new EventDrawElement(null, previousElement.getAfter(), previousElement.getAfter());
       case STOP:
         return new EventDrawElement(null, previousElement.getAfter(), new StoppedThreadState());
       case ACQUIRE_BEGIN:

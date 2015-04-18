@@ -20,7 +20,7 @@ public class PyThreadEvent extends PyThreadingEvent {
         sb.append(" started");
         break;
       case JOIN:
-        sb.append(" joined");
+        sb.append(" join called");
         break;
       case STOP:
         sb.append(" stopped");
