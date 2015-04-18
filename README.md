@@ -7,8 +7,9 @@ A tool for visualization of concurrent Python programs based on the PyCharm IDE.
 A Thread analyser helps to understand the concurrent Python program execution during debug process.
 Some of it's features include:
 
-* Visualization of events in concurrent programs (programs using module `threading`)
-* Navigation to the source code for every threading event
+* Visualization of events in concurrent programs (programs using module `threading` or module `asyncio`)
+* Navigation to the source code for every concurrency event
+* A stack trace display
 
 ## Installation
 
@@ -39,9 +40,12 @@ For module `threading`:
 * Lock acquire
 * Lock release
 
+For module `asyncio`:
+* Coroutines
+
 ### Navigation to source code
 
-Double-click on a row in the table navigates user to the source code of the corresponding threading event.
+A click on a row in the table navigates user to the source code of the corresponding concurrency event and shows a stacktrace for event.
 
 
 
