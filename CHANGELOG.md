@@ -1,5 +1,11 @@
 # Changes
 
+## 0.3, 18.04.2015
+
+* Support for coroutines from `asyncio` module
+* Separate join and stop events for threads
+* Fixes in stacktrace panel
+
 ## 0.2.1, 04.04.2015
 
 Bug fix release
