@@ -114,6 +114,16 @@ public class ProtocolParser {
       asyncioEvent = new PyCoroEvent(time, taskName, coroName );
       asyncioEvent.setFileName(readString(reader, "file", ""));
       asyncioEvent.setLine(Integer.parseInt(readString(reader, "line", "")) - 1);
+
+      reader.moveUp();
+      final List<PyStackFrameInfo> frames = new LinkedList<PyStackFrameInfo>();
+      while (reader.hasMoreChildren()) {
+        reader.moveDown();
+        frames.add(parseFrame(reader, "Thread", positionConverter));
+        reader.moveUp();
+      }
+      asyncioEvent.setFrames(frames);
+
       return asyncioEvent;
 
     } else {

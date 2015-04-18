@@ -144,6 +144,7 @@ public class StackTracePanel extends SimpleToolWindowPanel implements Disposable
 
   public void buildStackTrace(List<PyStackFrameInfo> frames) {
     final TreeState treeState = TreeState.createOn(myTree, rootNode);
+    rootNode.removeAllChildren();
 
     for(PyStackFrameInfo frame: frames) {
       DefaultMutableTreeNode frameNode = new DefaultMutableTreeNode(frame);

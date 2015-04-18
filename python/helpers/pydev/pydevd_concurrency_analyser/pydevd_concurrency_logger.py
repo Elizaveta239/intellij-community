@@ -36,57 +36,57 @@ except:
     pass
 
 
+def get_text_list_for_frame(frame):
+    # partial copy-paste from makeThreadSuspendStr
+    curFrame = frame
+    cmdTextList = []
+    try:
+        while curFrame:
+            #print cmdText
+            myId = str(id(curFrame))
+            #print "id is ", myId
+
+            if curFrame.f_code is None:
+                break #Iron Python sometimes does not have it!
+
+            myName = curFrame.f_code.co_name #method name (if in method) or ? if global
+            if myName is None:
+                break #Iron Python sometimes does not have it!
+
+            #print "name is ", myName
+
+            filename, base = pydevd_file_utils.GetFilenameAndBase(curFrame)
+
+            myFile = pydevd_file_utils.NormFileToClient(filename)
+            if file_system_encoding.lower() != "utf-8" and hasattr(myFile, "decode"):
+                # myFile is a byte string encoded using the file system encoding
+                # convert it to utf8
+                myFile = myFile.decode(file_system_encoding).encode("utf-8")
+
+            #print "file is ", myFile
+            #myFile = inspect.getsourcefile(curFrame) or inspect.getfile(frame)
+
+            myLine = str(curFrame.f_lineno)
+            #print "line is ", myLine
+
+            #the variables are all gotten 'on-demand'
+            #variables = pydevd_vars.frameVarsToXML(curFrame.f_locals)
+
+            variables = ''
+            cmdTextList.append('<frame id="%s" name="%s" ' % (myId , pydevd_vars.makeValidXmlValue(myName)))
+            cmdTextList.append('file="%s" line="%s">"' % (quote(myFile, '/>_= \t'), myLine))
+            cmdTextList.append(variables)
+            cmdTextList.append("</frame>")
+            curFrame = curFrame.f_back
+    except :
+        traceback.print_exc()
+
+    return cmdTextList
+
+
 class ThreadingLogger:
     def __init__(self):
         self.start_time = cur_time()
-
-    def _get_text_list_for_frame(self, frame):
-        # partial copy-paste from makeThreadSuspendStr
-        curFrame = frame
-        cmdTextList = []
-        try:
-            while curFrame:
-                #print cmdText
-                myId = str(id(curFrame))
-                #print "id is ", myId
-
-                if curFrame.f_code is None:
-                    break #Iron Python sometimes does not have it!
-
-                myName = curFrame.f_code.co_name #method name (if in method) or ? if global
-                if myName is None:
-                    break #Iron Python sometimes does not have it!
-
-                #print "name is ", myName
-
-                filename, base = pydevd_file_utils.GetFilenameAndBase(curFrame)
-
-                myFile = pydevd_file_utils.NormFileToClient(filename)
-                if file_system_encoding.lower() != "utf-8" and hasattr(myFile, "decode"):
-                    # myFile is a byte string encoded using the file system encoding
-                    # convert it to utf8
-                    myFile = myFile.decode(file_system_encoding).encode("utf-8")
-
-                #print "file is ", myFile
-                #myFile = inspect.getsourcefile(curFrame) or inspect.getfile(frame)
-
-                myLine = str(curFrame.f_lineno)
-                #print "line is ", myLine
-
-                #the variables are all gotten 'on-demand'
-                #variables = pydevd_vars.frameVarsToXML(curFrame.f_locals)
-
-                variables = ''
-                cmdTextList.append('<frame id="%s" name="%s" ' % (myId , pydevd_vars.makeValidXmlValue(myName)))
-                cmdTextList.append('file="%s" line="%s">"' % (quote(myFile, '/>_= \t'), myLine))
-                cmdTextList.append(variables)
-                cmdTextList.append("</frame>")
-                curFrame = curFrame.f_back
-        except :
-            traceback.print_exc()
-
-        return cmdTextList
-
 
     def send_message(self, time, name, thread_id, type, event, file, line, frame, lock_id=0):
         dbg = GlobalDebuggerHolder.globalDbg
@@ -104,7 +104,7 @@ class ThreadingLogger:
         cmdTextList.append(' line="%s"' % pydevd_vars.makeValidXmlValue(str(line)))
         cmdTextList.append('></threading_event>')
 
-        cmdTextList += self._get_text_list_for_frame(frame)
+        cmdTextList += get_text_list_for_frame(frame)
         cmdTextList.append('</xml>')
 
         text = ''.join(cmdTextList)
@@ -232,11 +232,11 @@ class AsyncioLogger:
                     coro_name = self.coro_mgr.get(str(id(self_obj)))
                     task_id = self.get_task_id(frame)
                     task_name = self.task_mgr.get(str(task_id))
-                    print("%s %s %s %s" % (task_name, coro_name, frame.f_code.co_filename, frame.f_lineno))
-                    self.send_message(event_time, task_name, coro_name, frame.f_code.co_filename, frame.f_lineno)
+                    # print("%s %s %s %s" % (task_name, coro_name, frame.f_code.co_filename, frame.f_lineno))
+                    self.send_message(event_time, task_name, coro_name, frame.f_code.co_filename, frame.f_lineno, frame)
 
 
-    def send_message(self, time, task_name, coro_name, file, line):
+    def send_message(self, time, task_name, coro_name, file, line, frame):
         dbg = GlobalDebuggerHolder.globalDbg
         cmdTextList = ['<xml>']
 
@@ -248,6 +248,7 @@ class AsyncioLogger:
         cmdTextList.append(' line="%s"' % pydevd_vars.makeValidXmlValue(str(line)))
         cmdTextList.append('></asyncio_event>')
 
+        cmdTextList += get_text_list_for_frame(frame)
         cmdTextList.append('</xml>')
 
         text = ''.join(cmdTextList)

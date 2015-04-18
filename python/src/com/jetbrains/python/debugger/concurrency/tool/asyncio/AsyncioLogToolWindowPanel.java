@@ -68,12 +68,6 @@ public class AsyncioLogToolWindowPanel extends ConcurrencyPanel {
     add(myLabel);
   }
 
-  @Override
-  public void showStackTrace(PyLogEvent event) {
-    //StackTracePanel lockPanel = new StackTracePanel(false, myProject);
-    //lockPanel.buildStackTrace(event.getFrames());
-    //splitWindow(lockPanel);
-  }
 
   public void splitWindow(JComponent component) {
     removeAll();
