@@ -3,10 +3,16 @@ package com.jetbrains.python.debugger;
 
 
 public class PyThreadEvent extends PyThreadingEvent {
+  private String myParentThreadId;
 
 
   public PyThreadEvent(Integer time, String threadId, String name) {
     super(time, threadId, name);
+  }
+
+  public PyThreadEvent(Integer time, String threadId, String name, String parentThreadId) {
+    super(time, threadId, name);
+    myParentThreadId = parentThreadId;
   }
 
   @Override
@@ -29,6 +35,10 @@ public class PyThreadEvent extends PyThreadingEvent {
         sb.append(" unknown command");
     }
     return sb.toString();
+  }
+
+  public String getParentThreadId() {
+    return myParentThreadId;
   }
 
   @Override

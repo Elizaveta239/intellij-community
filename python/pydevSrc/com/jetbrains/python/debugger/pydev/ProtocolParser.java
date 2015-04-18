@@ -59,7 +59,12 @@ public class ProtocolParser {
         threadingEvent = new PyLockEvent(time, thread_id, name, lock_id);
       }
       else if (type.equals("thread")) {
-        threadingEvent = new PyThreadEvent(time, thread_id, name);
+        String parentThread = readString(reader, "parent", "");
+        if (!parentThread.equals("")) {
+          threadingEvent = new PyThreadEvent(time, thread_id, name, parentThread);
+        } else {
+          threadingEvent = new PyThreadEvent(time, thread_id, name);
+        }
       }
       else {
         throw new PyDebuggerException("Unknown type " + type);

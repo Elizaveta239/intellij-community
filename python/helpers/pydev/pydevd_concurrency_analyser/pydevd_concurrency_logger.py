@@ -88,7 +88,7 @@ class ThreadingLogger:
     def __init__(self):
         self.start_time = cur_time()
 
-    def send_message(self, time, name, thread_id, type, event, file, line, frame, lock_id=0):
+    def send_message(self, time, name, thread_id, type, event, file, line, frame, lock_id=0, parent=None):
         dbg = GlobalDebuggerHolder.globalDbg
         cmdTextList = ['<xml>']
 
@@ -99,6 +99,8 @@ class ThreadingLogger:
         cmdTextList.append(' type="%s"' % pydevd_vars.makeValidXmlValue(type))
         if type == "lock":
             cmdTextList.append(' lock_id="%s"' % pydevd_vars.makeValidXmlValue(str(lock_id)))
+        if parent is not None:
+            cmdTextList.append(' parent="%s"' % pydevd_vars.makeValidXmlValue(parent))
         cmdTextList.append(' event="%s"' % pydevd_vars.makeValidXmlValue(event))
         cmdTextList.append(' file="%s"' % pydevd_vars.makeValidXmlValue(file))
         cmdTextList.append(' line="%s"' % pydevd_vars.makeValidXmlValue(str(line)))
@@ -142,8 +144,12 @@ class ThreadingLogger:
                         elif real_method == "join":
                             # join called in the current thread
                             thread_id = GetThreadId(t)
+
+                        parent = None
+                        if real_method in ("start", "stop"):
+                            parent = GetThreadId(t)
                         self.send_message(event_time, self_obj.getName(), thread_id, "thread",
-                        real_method, back.f_code.co_filename, back.f_lineno, back)
+                        real_method, back.f_code.co_filename, back.f_lineno, back, parent=parent)
                         # print(event_time, self_obj.getName(), thread_id, "thread",
                         #       real_method, back.f_code.co_filename, back.f_lineno)
 

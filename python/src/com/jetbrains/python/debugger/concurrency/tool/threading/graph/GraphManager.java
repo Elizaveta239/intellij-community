@@ -2,6 +2,7 @@
 package com.jetbrains.python.debugger.concurrency.tool.threading.graph;
 
 import com.intellij.util.containers.hash.HashMap;
+import com.jetbrains.python.debugger.PyThreadEvent;
 import com.jetbrains.python.debugger.PyThreadingEvent;
 import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
 import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
@@ -21,6 +22,7 @@ public class GraphManager {
   private Map<String, Integer> threadIndexToId;
   private final Object myUpdateObject = new Object();
   private int currentMaxThread = 0;
+  private int[][] relations;
 
   public GraphManager(PyConcurrencyLogManager logManager, ConcurrencyColorManager colorManager) {
     myLogManager = (PyThreadingLogManagerImpl)logManager;
@@ -46,8 +48,8 @@ public class GraphManager {
 
   public ArrayList<DrawElement> getDrawElementsForRow(int row) {
     ArrayList<DrawElement> rowElements = new ArrayList<DrawElement>();
-    for (int i = 0; i < threadCountForRow[row]; ++i) {
-      rowElements.add(myGraphScheme[row][i]);
+    for (DrawElement element: myGraphScheme[row]) {
+      rowElements.add(element);
     }
     return rowElements;
   }
@@ -71,11 +73,21 @@ public class GraphManager {
     }
   }
 
+  private void addRelation(int index, int parent, int child) {
+    relations[index][0] = parent;
+    relations[index][1] = child;
+  }
+
+  public int[] getRelationForRow(int row) {
+    return relations[row];
+  }
+
   public void updateGraph() {
     synchronized (myUpdateObject) {
       myGraphScheme = new DrawElement[myLogManager.getSize() + 1][];
       threadCountForRow = new int[myLogManager.getSize() + 1];
       List<PyThreadingEvent> myLog = myLogManager.getLog();
+      relations = new int[myLogManager.getSize() + 1][2];
       currentMaxThread = 0;
       int i = 0;
       for (PyThreadingEvent event : myLog) {
@@ -87,6 +99,10 @@ public class GraphManager {
           currentMaxThread++;
           threadIndexToId.put(eventThreadId, currentMaxThread - 1);
 
+          int parentNum = threadIndexToId.get(((PyThreadEvent)event).getParentThreadId());
+          int eventNum = currentMaxThread - 1;
+          addRelation(i, parentNum, eventNum);
+
           myGraphScheme[i] = new DrawElement[currentMaxThread];
           for (int j = 0; j < currentMaxThread - 1; ++j) {
             myGraphScheme[i][j] = myGraphScheme[i - 1][j].getNextElement();
@@ -97,6 +113,12 @@ public class GraphManager {
         }
         else {
           int eventThreadIdInt = threadIndexToId.containsKey(eventThreadId) ? threadIndexToId.get(eventThreadId) : 0;
+
+          if ((event instanceof PyThreadEvent) && (((PyThreadEvent)event).getParentThreadId() != null)) {
+            int parentNum = threadIndexToId.get(((PyThreadEvent)event).getParentThreadId());
+            int eventNum = eventThreadIdInt;
+            addRelation(i, parentNum, eventNum);
+          }
 
           myGraphScheme[i] = new DrawElement[currentMaxThread];
           for (int j = 0; j < currentMaxThread; ++j) {

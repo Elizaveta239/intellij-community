@@ -1650,7 +1650,7 @@ class PyDB:
         if self.thread_analyser is not None:
             wrap_threads()
             t = threadingCurrentThread()
-            self.thread_analyser.send_message(0, t.getName(), GetThreadId(t), "thread", "start", file, 1, None)
+            self.thread_analyser.send_message(0, t.getName(), GetThreadId(t), "thread", "start", file, 1, None, parent=GetThreadId(t))
 
         pydev_imports.execfile(file, globals, locals)  # execute the script
 
