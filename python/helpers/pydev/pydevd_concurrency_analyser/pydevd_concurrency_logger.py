@@ -134,6 +134,7 @@ class ThreadingLogger:
                     if back_base not in DONT_TRACE_THREADING or \
                             (method_name in INNER_METHODS and back_base in INNER_FILES):
                         thread_id = GetThreadId(self_obj)
+                        name = self_obj.getName()
                         real_method = frame.f_code.co_name
                         if real_method == "_stop":
                             # TODO: Python 2
@@ -142,13 +143,14 @@ class ThreadingLogger:
                                 back = back.f_back.f_back
                             real_method = "stop"
                         elif real_method == "join":
-                            # join called in the current thread
+                            # join called in the current thread, not in self object
                             thread_id = GetThreadId(t)
+                            name = t.getName()
 
                         parent = None
                         if real_method in ("start", "stop"):
                             parent = GetThreadId(t)
-                        self.send_message(event_time, self_obj.getName(), thread_id, "thread",
+                        self.send_message(event_time, name, thread_id, "thread",
                         real_method, back.f_code.co_filename, back.f_lineno, back, parent=parent)
                         # print(event_time, self_obj.getName(), thread_id, "thread",
                         #       real_method, back.f_code.co_filename, back.f_lineno)

@@ -49,6 +49,9 @@ public class GraphCellRenderer extends ColoredTableCellRenderer {
     }
     int[] relation = myGraphManager.getRelationForRow(myRow);
     if (relation[0] != relation[1]) {
+      DrawElement element = rowElements.get(relation[1]);
+      ThreadState state = element.getAfter() instanceof StoppedThreadState? element.getBefore(): element.getAfter();
+      state.prepareStroke(g);
       drawRelation(g, relation[0], relation[1]);
     }
   }
