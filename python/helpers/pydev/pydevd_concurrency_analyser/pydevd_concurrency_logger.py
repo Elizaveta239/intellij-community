@@ -234,25 +234,39 @@ class AsyncioLogger:
         back = frame.f_back
         method_name = back.f_code.co_name
 
-        if DictContains(back.f_locals, "self"):
-            self_obj = back.f_locals["self"]
-            if isinstance(self_obj, asyncio.tasks.CoroWrapper):
-                if method_name in ("__next__", "send"):
-                    coro_name = self.coro_mgr.get(str(id(self_obj)))
-                    task_id = self.get_task_id(frame)
+        # Coroutines
+        #
+        # if DictContains(back.f_locals, "self"):
+        #     self_obj = back.f_locals["self"]
+        #     if isinstance(self_obj, asyncio.tasks.CoroWrapper):
+        #         if method_name in ("__next__", "send"):
+        #             coro_name = self.coro_mgr.get(str(id(self_obj)))
+        #             task_id = self.get_task_id(frame)
+        #             task_name = self.task_mgr.get(str(task_id))
+        #             # print("%s %s %s %s" % (task_name, coro_name, frame.f_code.co_filename, frame.f_lineno))
+        #             self.send_message(event_time, task_name, coro_name, frame.f_code.co_filename, frame.f_lineno, frame)
+
+        if DictContains(frame.f_locals, "self"):
+            self_obj = frame.f_locals["self"]
+            if isinstance(self_obj, asyncio.Task):
+                if method_name in ("__init__",):
+                    task_id = id(self_obj)
                     task_name = self.task_mgr.get(str(task_id))
                     # print("%s %s %s %s" % (task_name, coro_name, frame.f_code.co_filename, frame.f_lineno))
-                    self.send_message(event_time, task_name, coro_name, frame.f_code.co_filename, frame.f_lineno, frame)
+                    self.send_message(event_time, task_name, "thread", "start", frame.f_code.co_filename, frame.f_lineno, frame)
 
 
-    def send_message(self, time, task_name, coro_name, file, line, frame):
+
+
+    def send_message(self, time, task_name, type, event, file, line, frame):
         dbg = GlobalDebuggerHolder.globalDbg
         cmdTextList = ['<xml>']
 
         cmdTextList.append('<asyncio_event')
         cmdTextList.append(' time="%s"' % pydevd_vars.makeValidXmlValue(str(time)))
         cmdTextList.append(' task_name="%s"' % pydevd_vars.makeValidXmlValue(task_name))
-        cmdTextList.append(' coro_name="%s"' % pydevd_vars.makeValidXmlValue(coro_name))
+        cmdTextList.append(' type="%s"' % pydevd_vars.makeValidXmlValue(type))
+        cmdTextList.append(' event="%s"' % pydevd_vars.makeValidXmlValue(event))
         cmdTextList.append(' file="%s"' % pydevd_vars.makeValidXmlValue(file))
         cmdTextList.append(' line="%s"' % pydevd_vars.makeValidXmlValue(str(line)))
         cmdTextList.append('></asyncio_event>')

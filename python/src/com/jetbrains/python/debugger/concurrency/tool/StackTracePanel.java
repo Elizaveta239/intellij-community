@@ -20,7 +20,8 @@ import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.ui.tree.TreeUtil;
 import com.intellij.xdebugger.XSourcePosition;
 import com.intellij.xdebugger.impl.XSourcePositionImpl;
-import com.jetbrains.python.debugger.*;
+import com.jetbrains.python.debugger.PySourcePosition;
+import com.jetbrains.python.debugger.PyStackFrameInfo;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

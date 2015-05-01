@@ -15,14 +15,14 @@
  */
 package com.jetbrains.python.debugger.concurrency.tool.asyncio.table;
 
-import com.jetbrains.python.debugger.PyAsyncioEvent;
+import com.jetbrains.python.debugger.PyConcurrencyEvent;
+import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
 import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyTableModel;
-import com.jetbrains.python.debugger.concurrency.tool.asyncio.PyAsyncioLogManagerImpl;
-import com.jetbrains.python.debugger.concurrency.tool.asyncio.graph.AsyncioGraphCell;
+import com.jetbrains.python.debugger.concurrency.tool.graph.GraphCell;
 
 public class AsyncioTableModel extends ConcurrencyTableModel {
 
-  public AsyncioTableModel(PyAsyncioLogManagerImpl logManager) {
+  public AsyncioTableModel(PyConcurrencyLogManager logManager) {
     super(logManager);
     COLUMN_NAMES = new String[]{"Task", "Graph", "Event"};
   }
@@ -33,7 +33,7 @@ public class AsyncioTableModel extends ConcurrencyTableModel {
       case TASK_COLUMN:
         return TaskCell.class;
       case GRAPH_COLUMN:
-        return AsyncioGraphCell.class;
+        return GraphCell.class;
       case EVENT_COLUMN:
         return String.class;
       default:
@@ -43,15 +43,15 @@ public class AsyncioTableModel extends ConcurrencyTableModel {
 
   @Override
   public Object getValueAt(int rowIndex, int columnIndex) {
-    PyAsyncioEvent event = (PyAsyncioEvent)myLogManager.getEventAt(rowIndex);
+    PyConcurrencyEvent event = myLogManager.getEventAt(rowIndex);
     switch (columnIndex) {
       case TASK_COLUMN:
-        return new TaskCell(event.getTaskId());
+        return new TaskCell(event.getThreadId());
       case GRAPH_COLUMN:
-        return "";
+        return new GraphCell();
       case EVENT_COLUMN:
         //return myThreadingNamesManager.getFullEventName(event);
-        return event.getEventId();
+        return event.getEventActionName();
       default:
         return null;
     }

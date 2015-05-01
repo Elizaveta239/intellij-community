@@ -15,8 +15,9 @@
  */
 package com.jetbrains.python.debugger.concurrency.tool;
 
-import com.jetbrains.python.debugger.PyLogEvent;
+import com.jetbrains.python.debugger.PyConcurrencyEvent;
 import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
+
 import javax.swing.table.AbstractTableModel;
 
 public abstract class ConcurrencyTableModel extends AbstractTableModel {
@@ -26,7 +27,7 @@ public abstract class ConcurrencyTableModel extends AbstractTableModel {
 
   public static final int COLUMN_COUNT = EVENT_COLUMN + 1;
   protected static String[] COLUMN_NAMES;
-  protected final PyConcurrencyLogManager<PyLogEvent> myLogManager;
+  protected final PyConcurrencyLogManager<PyConcurrencyEvent> myLogManager;
 
   public ConcurrencyTableModel(PyConcurrencyLogManager logManager) {
     myLogManager = logManager;

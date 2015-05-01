@@ -18,8 +18,8 @@ package com.jetbrains.python.debugger.concurrency.tool.threading;
 
 import com.intellij.util.containers.hash.HashMap;
 import com.jetbrains.python.debugger.PyLockEvent;
+import com.jetbrains.python.debugger.PyConcurrencyEvent;
 import com.jetbrains.python.debugger.PyThreadEvent;
-import com.jetbrains.python.debugger.PyThreadingEvent;
 
 import java.util.Map;
 
@@ -42,7 +42,7 @@ public class ThreadingNamesManager {
     }
   }
 
-  public String getFullEventName(PyThreadingEvent event) {
+  public String getFullEventName(PyConcurrencyEvent event) {
     StringBuilder sb = new StringBuilder();
     if (event instanceof PyThreadEvent) {
       sb.append(event.getThreadName());

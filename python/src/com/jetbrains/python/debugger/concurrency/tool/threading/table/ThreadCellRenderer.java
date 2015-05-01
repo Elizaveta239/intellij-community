@@ -1,9 +1,9 @@
 
-package com.jetbrains.python.debugger.concurrency.tool.threading.tables;
+package com.jetbrains.python.debugger.concurrency.tool.threading.table;
 
 import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
-import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
 import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyColorManager;
+import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

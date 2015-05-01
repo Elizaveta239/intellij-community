@@ -21,24 +21,25 @@ import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyColorManager;
 import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyPanel;
 import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyTable;
 import com.jetbrains.python.debugger.concurrency.tool.asyncio.PyAsyncioLogManagerImpl;
-import com.jetbrains.python.debugger.concurrency.tool.asyncio.graph.AsyncioGraphCell;
-import com.jetbrains.python.debugger.concurrency.tool.asyncio.graph.AsyncioGraphCellRenderer;
-import com.jetbrains.python.debugger.concurrency.tool.asyncio.graph.AsyncioGraphManager;
+import com.jetbrains.python.debugger.concurrency.tool.graph.GraphCell;
+import com.jetbrains.python.debugger.concurrency.tool.graph.GraphCellRenderer;
+import com.jetbrains.python.debugger.concurrency.tool.graph.GraphManager;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class AsyncioTable extends ConcurrencyTable {
-  protected AsyncioGraphManager myGraphManager;
+  protected GraphManager myGraphManager;
   protected ConcurrencyColorManager myColorManager;
 
   public AsyncioTable(PyAsyncioLogManagerImpl logManager, Project project, ConcurrencyPanel panel) {
     super(logManager, project, panel);
     myColorManager = new ConcurrencyColorManager();
-    myGraphManager = new AsyncioGraphManager(logManager, myColorManager);
+    //myGraphManager = new AsyncioGraphManager(logManager, myColorManager);
+    myGraphManager = new GraphManager(logManager, myColorManager);
 
     setDefaultRenderer(TaskCell.class, new TaskCellRenderer(myColorManager, myLogManager));
-    setDefaultRenderer(AsyncioGraphCell.class, new AsyncioGraphCellRenderer(myLogManager, myGraphManager));
+    setDefaultRenderer(GraphCell.class, new GraphCellRenderer(myLogManager, myGraphManager));
 
     addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {

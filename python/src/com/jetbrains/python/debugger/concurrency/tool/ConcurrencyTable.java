@@ -19,7 +19,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.AppUIUtil;
 import com.intellij.ui.table.JBTable;
 import com.intellij.xdebugger.XSourcePosition;
-import com.jetbrains.python.debugger.PyLogEvent;
+import com.jetbrains.python.debugger.PyConcurrencyEvent;
 import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +27,7 @@ import javax.swing.table.TableModel;
 
 public class ConcurrencyTable extends JBTable {
   protected ConcurrencyColorManager myColorManager;
-  protected PyConcurrencyLogManager<PyLogEvent> myLogManager;
+  protected PyConcurrencyLogManager<PyConcurrencyEvent> myLogManager;
   protected Project myProject;
   protected ConcurrencyPanel myPanel;
   protected boolean myColumnsInitialized = false;

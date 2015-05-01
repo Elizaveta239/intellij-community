@@ -5,8 +5,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.util.ui.UIUtil;
 import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyPanel;
-import com.jetbrains.python.debugger.concurrency.tool.threading.tables.ThreadingTable;
-import com.jetbrains.python.debugger.concurrency.tool.threading.tables.ThreadingTableModel;
+import com.jetbrains.python.debugger.concurrency.tool.threading.table.ThreadingTable;
+import com.jetbrains.python.debugger.concurrency.tool.threading.table.ThreadingTableModel;
 
 import javax.swing.*;
 

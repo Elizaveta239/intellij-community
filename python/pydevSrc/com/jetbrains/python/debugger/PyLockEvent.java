@@ -2,11 +2,11 @@
 package com.jetbrains.python.debugger;
 
 
-public class PyLockEvent extends PyThreadingEvent {
+public class PyLockEvent extends PyConcurrencyEvent {
   private final String myId;
 
-  public PyLockEvent(Integer time, String threadId, String name, String id) {
-    super(time, threadId, name);
+  public PyLockEvent(Integer time, String threadId, String name, String id, boolean isAsyncio) {
+    super(time, threadId, name, isAsyncio);
     myId = id;
   }
 
@@ -39,11 +39,6 @@ public class PyLockEvent extends PyThreadingEvent {
   @Override
   public boolean isThreadEvent() {
     return false;
-  }
-
-  @Override
-  public boolean isLockEvent() {
-    return true;
   }
 
   @Override

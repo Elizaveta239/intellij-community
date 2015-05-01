@@ -1,7 +1,8 @@
 
-package com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.elements;
+package com.jetbrains.python.debugger.concurrency.tool.graph.elements;
 
-import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.ThreadState;
+import com.jetbrains.python.debugger.concurrency.tool.graph.ThreadState;
+
 import java.awt.*;
 
 public abstract class DrawElement {

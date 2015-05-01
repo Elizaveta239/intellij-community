@@ -1,10 +1,10 @@
 
 package com.jetbrains.python.debugger.concurrency;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.xdebugger.XDebugSession;
 import com.intellij.xdebugger.XDebugSessionListener;
+import com.jetbrains.python.debugger.concurrency.tool.graph.ThreadState;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -81,6 +81,8 @@ public abstract class PyConcurrencyLogManager<T> {
   public interface Listener {
     void logChanged();
   }
+
+  public abstract ThreadState getThreadStateAt(int index, String threadId);
 
   public void registerListener(@NotNull Listener listener) {
     synchronized (myListenersObject) {

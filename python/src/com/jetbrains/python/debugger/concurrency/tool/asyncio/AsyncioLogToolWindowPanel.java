@@ -19,21 +19,16 @@ package com.jetbrains.python.debugger.concurrency.tool.asyncio;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.util.ui.UIUtil;
-import com.jetbrains.python.debugger.PyLogEvent;
-import com.jetbrains.python.debugger.PyThreadingEvent;
-import com.jetbrains.python.debugger.concurrency.tool.StackTracePanel;
+import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyPanel;
 import com.jetbrains.python.debugger.concurrency.tool.asyncio.table.AsyncioTable;
 import com.jetbrains.python.debugger.concurrency.tool.asyncio.table.AsyncioTableModel;
 import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
-import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyPanel;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class AsyncioLogToolWindowPanel extends ConcurrencyPanel {
   private final Project myProject;
   private JTable myTable;
-  private JScrollPane myPane;
 
   public AsyncioLogToolWindowPanel(Project project) {
     super(false, project);
@@ -68,19 +63,6 @@ public class AsyncioLogToolWindowPanel extends ConcurrencyPanel {
     add(myLabel);
   }
 
-
-  public void splitWindow(JComponent component) {
-    removeAll();
-    JSplitPane p = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    p.add(myPane, JSplitPane.LEFT);
-    p.add(component, JSplitPane.RIGHT);
-    p.setDividerLocation((int)getSize().getWidth() * 2 / 3);
-    add(p, BorderLayout.CENTER);
-
-    validate();
-    repaint();
-  }
-
   public void buildLog() {
     if (logManager.getSize() == 0) {
       myTable = null;
@@ -92,11 +74,11 @@ public class AsyncioLogToolWindowPanel extends ConcurrencyPanel {
       myLabel.setVisible(false);
 
       myTable = new AsyncioTable((PyAsyncioLogManagerImpl)logManager, myProject, this);
-      myTable.setModel(new AsyncioTableModel((PyAsyncioLogManagerImpl)logManager));
+      myTable.setModel(new AsyncioTableModel(logManager));
       myPane = ScrollPaneFactory.createScrollPane(myTable);
       add(myPane);
     }
-    myTable.setModel(new AsyncioTableModel((PyAsyncioLogManagerImpl)logManager));
+    myTable.setModel(new AsyncioTableModel(logManager));
   }
 
   @Override

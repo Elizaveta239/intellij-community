@@ -1,19 +1,16 @@
 
-package com.jetbrains.python.debugger.concurrency.tool.threading.tables;
+package com.jetbrains.python.debugger.concurrency.tool.threading.table;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.ui.AppUIUtil;
 import com.intellij.ui.table.JBTable;
-import com.intellij.xdebugger.XSourcePosition;
-import com.jetbrains.python.debugger.PyThreadingEvent;
-import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyTable;
-import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
-import com.jetbrains.python.debugger.concurrency.tool.threading.graph.GraphManager;
-import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.GraphCell;
-import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.GraphCellRenderer;
-import com.jetbrains.python.debugger.concurrency.tool.GraphSettings;
 import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyColorManager;
 import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyPanel;
+import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyTable;
+import com.jetbrains.python.debugger.concurrency.tool.GraphSettings;
+import com.jetbrains.python.debugger.concurrency.tool.graph.GraphCell;
+import com.jetbrains.python.debugger.concurrency.tool.graph.GraphCellRenderer;
+import com.jetbrains.python.debugger.concurrency.tool.graph.GraphManager;
+import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -39,7 +36,7 @@ public class ThreadingTable extends ConcurrencyTable {
           int row = target.getSelectedRow();
           if (row != -1) {
             navigateToSource(myLogManager.getEventAt(row).getSourcePosition());
-            myPanel.showStackTrace((PyThreadingEvent)myLogManager.getEventAt(row));
+            myPanel.showStackTrace(myLogManager.getEventAt(row));
           }
         }
       }

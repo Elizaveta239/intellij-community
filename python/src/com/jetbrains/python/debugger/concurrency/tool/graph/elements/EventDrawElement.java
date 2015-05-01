@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.elements;
+package com.jetbrains.python.debugger.concurrency.tool.graph.elements;
 
 import com.jetbrains.python.debugger.concurrency.tool.GraphSettings;
-import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.ThreadState;
-import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.StoppedThreadState;
+import com.jetbrains.python.debugger.concurrency.tool.graph.StoppedThreadState;
+import com.jetbrains.python.debugger.concurrency.tool.graph.ThreadState;
 
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;

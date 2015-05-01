@@ -26,7 +26,7 @@ public interface IPyDebugProcess extends PyFrameAccessor {
 
   void recordSignature(PySignature signature);
 
-  void recordLogEvent(PyLogEvent event);
+  void recordLogEvent(PyConcurrencyEvent event);
 
   void showConsole(PyThreadInfo thread);
 

@@ -13,18 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui;
-
-import com.jetbrains.python.debugger.concurrency.tool.GraphSettings;
+package com.jetbrains.python.debugger.concurrency.tool.graph;
 
 import java.awt.*;
 
 
-public class RunThreadState extends ThreadState {
-  @Override
-  public void prepareStroke(Graphics g) {
-    Graphics2D g2 = (Graphics2D)g;
-    g2.setStroke(new BasicStroke(GraphSettings.STROKE_BASIC));
-    g2.setColor(GraphSettings.BASIC_COLOR);
-  }
+public abstract class ThreadState {
+  public abstract void prepareStroke(Graphics g);
 }

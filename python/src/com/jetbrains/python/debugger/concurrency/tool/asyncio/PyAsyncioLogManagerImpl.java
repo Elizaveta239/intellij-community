@@ -17,23 +17,29 @@ package com.jetbrains.python.debugger.concurrency.tool.asyncio;
 
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
-import com.jetbrains.python.debugger.PyAsyncioEvent;
+import com.jetbrains.python.debugger.PyConcurrencyEvent;
 import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
+import com.jetbrains.python.debugger.concurrency.tool.graph.ThreadState;
 
 import java.util.ArrayList;
 
-public class PyAsyncioLogManagerImpl extends PyConcurrencyLogManager<PyAsyncioEvent> {
+public class PyAsyncioLogManagerImpl extends PyConcurrencyLogManager<PyConcurrencyEvent> {
 
   public static PyAsyncioLogManagerImpl getInstance(Project project) {
     return ServiceManager.getService(project, PyAsyncioLogManagerImpl.class);
   }
 
   public String getTaskIdForEventAt(int index) {
-    return myLog.get(index).getTaskId();
+    return myLog.get(index).getThreadId();
   }
 
   public PyAsyncioLogManagerImpl(Project project) {
     myProject = project;
-    myLog = new ArrayList<PyAsyncioEvent>();
+    myLog = new ArrayList<PyConcurrencyEvent>();
+  }
+
+  @Override
+  public ThreadState getThreadStateAt(int index, String threadId) {
+    return null;
   }
 }

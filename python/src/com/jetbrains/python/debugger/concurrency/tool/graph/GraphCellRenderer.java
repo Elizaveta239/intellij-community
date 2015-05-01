@@ -1,25 +1,23 @@
 
-package com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui;
+package com.jetbrains.python.debugger.concurrency.tool.graph;
 
 
 import com.intellij.ui.ColoredTableCellRenderer;
 import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
 import com.jetbrains.python.debugger.concurrency.tool.GraphSettings;
-import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
-import com.jetbrains.python.debugger.concurrency.tool.threading.graph.GraphManager;
-import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.elements.DrawElement;
+import com.jetbrains.python.debugger.concurrency.tool.graph.elements.DrawElement;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
 public class GraphCellRenderer extends ColoredTableCellRenderer {
-  private final PyThreadingLogManagerImpl myLogManager;
+  private final PyConcurrencyLogManager myLogManager;
   private final GraphManager myGraphManager;
   private int myRow;
 
   public GraphCellRenderer(PyConcurrencyLogManager logManager, GraphManager graphManager) {
-    myLogManager = (PyThreadingLogManagerImpl)logManager;
+    myLogManager = logManager;
     myGraphManager = graphManager;
   }
 

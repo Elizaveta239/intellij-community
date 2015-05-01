@@ -1,5 +1,5 @@
 
-package com.jetbrains.python.debugger.concurrency.tool.threading.tables;
+package com.jetbrains.python.debugger.concurrency.tool.threading.table;
 
 public class ThreadCell {
   private final String myThreadName;

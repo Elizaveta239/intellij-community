@@ -4,16 +4,16 @@ package com.jetbrains.python.debugger.concurrency.tool.threading;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.jetbrains.python.debugger.PyLockEvent;
-import com.jetbrains.python.debugger.PyThreadingEvent;
+import com.jetbrains.python.debugger.PyConcurrencyEvent;
 import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
-import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.LockOwnThreadState;
-import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.LockWaitThreadState;
-import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.RunThreadState;
-import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.ThreadState;
+import com.jetbrains.python.debugger.concurrency.tool.graph.LockOwnThreadState;
+import com.jetbrains.python.debugger.concurrency.tool.graph.LockWaitThreadState;
+import com.jetbrains.python.debugger.concurrency.tool.graph.RunThreadState;
+import com.jetbrains.python.debugger.concurrency.tool.graph.ThreadState;
 
 import java.util.ArrayList;
 
-public class PyThreadingLogManagerImpl extends PyConcurrencyLogManager<PyThreadingEvent> {
+public class PyThreadingLogManagerImpl extends PyConcurrencyLogManager<PyConcurrencyEvent> {
   public ThreadingNamesManager myLockManager;
 
   public static PyThreadingLogManagerImpl getInstance(Project project) {
@@ -22,7 +22,7 @@ public class PyThreadingLogManagerImpl extends PyConcurrencyLogManager<PyThreadi
 
   public PyThreadingLogManagerImpl(Project project) {
     myProject = project;
-    myLog = new ArrayList<PyThreadingEvent>();
+    myLog = new ArrayList<PyConcurrencyEvent>();
     myLockManager = new ThreadingNamesManager();
   }
 
@@ -34,7 +34,7 @@ public class PyThreadingLogManagerImpl extends PyConcurrencyLogManager<PyThreadi
     int locksAcquired = 0;
     int locksOwn = 0;
     for (int i = 0; i <= index; ++i) {
-      PyThreadingEvent event = myLog.get(i);
+      PyConcurrencyEvent event = myLog.get(i);
       if ((event.getThreadId().equals(threadId) && event instanceof PyLockEvent)) {
         PyLockEvent lockEvent = (PyLockEvent)event;
         if (lockEvent.getType() == PyLockEvent.EventType.ACQUIRE_BEGIN) {

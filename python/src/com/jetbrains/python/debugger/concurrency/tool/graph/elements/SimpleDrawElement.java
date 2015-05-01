@@ -13,36 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jetbrains.python.debugger.concurrency.tool.asyncio.graph;
+package com.jetbrains.python.debugger.concurrency.tool.graph.elements;
+
 import com.jetbrains.python.debugger.concurrency.tool.GraphSettings;
+import com.jetbrains.python.debugger.concurrency.tool.graph.StoppedThreadState;
+import com.jetbrains.python.debugger.concurrency.tool.graph.ThreadState;
 
 import java.awt.*;
-import java.awt.geom.RoundRectangle2D;
 
-public class CoroElement extends DrawElement {
-  protected DrawElement myParent;
+public class SimpleDrawElement extends DrawElement {
 
-  public CoroElement(Color color) {
-    super(color);
+  public SimpleDrawElement(Color color, ThreadState before, ThreadState after) {
+    super(color, before, after);
   }
 
   @Override
   public DrawElement getNextElement() {
-    return new EmptyElement(null);
+    return new SimpleDrawElement(myColor, myAfter, myAfter);
   }
 
   @Override
   public void drawElement(Graphics g, int padding) {
     Graphics2D g2 = (Graphics2D)g;
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    g.setColor(myColor);
-    double r = GraphSettings.CELL_HEIGH * 0.25;
-    double newX = Math.round((padding + 0.5f) * GraphSettings.NODE_WIDTH) - r;
-    double newY = GraphSettings.CELL_HEIGH * 0.5 - r;
-    RoundRectangle2D rectangle2D = new RoundRectangle2D.Double(newX, newY,
-                                                               GraphSettings.CELL_HEIGH * 0.5,
-                                                               GraphSettings.CELL_HEIGH * 0.5,
-                                                               50, 50);
-    g2.fill(rectangle2D);
+    int x = Math.round((padding + 0.5f) * GraphSettings.NODE_WIDTH);
+
+    if (myBefore instanceof StoppedThreadState) {
+      return;
+    }
+
+    myBefore.prepareStroke(g2);
+    g2.drawLine(x, 0, x, Math.round(GraphSettings.CELL_HEIGH * 0.5f));
+    myAfter.prepareStroke(g2);
+    g2.drawLine(x, Math.round(GraphSettings.CELL_HEIGH * 0.5f), x, GraphSettings.CELL_HEIGH);
+
   }
 }

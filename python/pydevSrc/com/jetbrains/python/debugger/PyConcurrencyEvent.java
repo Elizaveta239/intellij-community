@@ -23,9 +23,45 @@ import com.intellij.xdebugger.impl.XSourcePositionImpl;
 import java.util.List;
 
 
-public abstract class PyLogEvent {
+public abstract class PyConcurrencyEvent {
+  protected String myThreadId;
+  protected EventType myType;
+  protected String myName;
   protected String myFileName;
   protected Integer myLine;
+  protected boolean myIsAsyncio;
+  protected Integer myTime;
+
+  public enum EventType {
+    CREATE, ACQUIRE_BEGIN, ACQUIRE_END, RELEASE, START, JOIN, STOP
+  };
+
+  public PyConcurrencyEvent(Integer time, String threadId, String name, boolean isAsyncio) {
+    myTime = time;
+    myThreadId = threadId;
+    myName = name;
+    myIsAsyncio = isAsyncio;
+  }
+
+  public void setType(EventType type) {
+    myType = type;
+  }
+
+  public String getThreadId() {
+    return myThreadId;
+  }
+
+  public EventType getType() {
+    return myType;
+  }
+
+  public String getThreadName() {
+    return myName;
+  }
+
+  public abstract String getEventActionName();
+
+  public abstract boolean isThreadEvent();
 
   public void setFileName(String fileName) {
     myFileName = fileName;
@@ -51,6 +87,10 @@ public abstract class PyLogEvent {
 
   public void setFrames(List<PyStackFrameInfo> frames) {
     myFrames = frames;
+  }
+
+  public boolean isAsyncio() {
+    return myIsAsyncio;
   }
 
   public XSourcePosition getSourcePosition() {

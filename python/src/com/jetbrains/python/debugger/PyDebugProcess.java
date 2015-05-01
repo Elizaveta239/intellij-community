@@ -54,7 +54,6 @@ import com.jetbrains.python.console.pydev.PydevCompletionVariant;
 import com.jetbrains.python.debugger.concurrency.tool.asyncio.PyAsyncioLogManagerImpl;
 import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
 import com.jetbrains.python.debugger.pydev.*;
-import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
 import com.jetbrains.python.psi.PyFunction;
 import com.jetbrains.python.run.PythonProcessHandler;
 import org.jetbrains.annotations.NotNull;
@@ -303,11 +302,11 @@ public class PyDebugProcess extends XDebugProcess implements IPyDebugProcess, Pr
   }
 
   @Override
-  public void recordLogEvent(PyLogEvent event) {
-    if (event instanceof PyThreadingEvent) {
-      PyThreadingLogManagerImpl.getInstance(getSession().getProject()).recordEvent(getSession(), (PyThreadingEvent)event);
-    } else if (event instanceof PyAsyncioEvent) {
-      PyAsyncioLogManagerImpl.getInstance(getSession().getProject()).recordEvent(getSession(), (PyAsyncioEvent)event);
+  public void recordLogEvent(PyConcurrencyEvent event) {
+    if (!event.isAsyncio()) {
+      PyThreadingLogManagerImpl.getInstance(getSession().getProject()).recordEvent(getSession(), event);
+    } else {
+      PyAsyncioLogManagerImpl.getInstance(getSession().getProject()).recordEvent(getSession(), event);
     }
   }
 

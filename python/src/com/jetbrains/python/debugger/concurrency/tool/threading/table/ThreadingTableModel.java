@@ -1,10 +1,10 @@
 
-package com.jetbrains.python.debugger.concurrency.tool.threading.tables;
+package com.jetbrains.python.debugger.concurrency.tool.threading.table;
 
-import com.jetbrains.python.debugger.PyThreadingEvent;
+import com.jetbrains.python.debugger.PyConcurrencyEvent;
 import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyTableModel;
+import com.jetbrains.python.debugger.concurrency.tool.graph.GraphCell;
 import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
-import com.jetbrains.python.debugger.concurrency.tool.threading.graph.ui.GraphCell;
 import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingNamesManager;
 
 public class ThreadingTableModel extends ConcurrencyTableModel {
@@ -32,7 +32,7 @@ public class ThreadingTableModel extends ConcurrencyTableModel {
 
   @Override
   public Object getValueAt(int rowIndex, int columnIndex) {
-    PyThreadingEvent event = (PyThreadingEvent)myLogManager.getEventAt(rowIndex);
+    PyConcurrencyEvent event = myLogManager.getEventAt(rowIndex);
     switch (columnIndex) {
       case TASK_COLUMN:
         return new ThreadCell(event.getThreadName());
