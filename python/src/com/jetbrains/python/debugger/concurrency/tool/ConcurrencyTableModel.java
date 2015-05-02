@@ -28,6 +28,7 @@ public abstract class ConcurrencyTableModel extends AbstractTableModel {
   public static final int COLUMN_COUNT = EVENT_COLUMN + 1;
   protected static String[] COLUMN_NAMES;
   protected final PyConcurrencyLogManager<PyConcurrencyEvent> myLogManager;
+  protected ConcurrencyNamesManager myThreadingNamesManager;
 
   public ConcurrencyTableModel(PyConcurrencyLogManager logManager) {
     myLogManager = logManager;

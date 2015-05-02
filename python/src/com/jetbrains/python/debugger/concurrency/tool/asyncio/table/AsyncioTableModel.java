@@ -17,6 +17,7 @@ package com.jetbrains.python.debugger.concurrency.tool.asyncio.table;
 
 import com.jetbrains.python.debugger.PyConcurrencyEvent;
 import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
+import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyNamesManager;
 import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyTableModel;
 import com.jetbrains.python.debugger.concurrency.tool.graph.GraphCell;
 
@@ -24,6 +25,7 @@ public class AsyncioTableModel extends ConcurrencyTableModel {
 
   public AsyncioTableModel(PyConcurrencyLogManager logManager) {
     super(logManager);
+    myThreadingNamesManager = new ConcurrencyNamesManager();
     COLUMN_NAMES = new String[]{"Task", "Graph", "Event"};
   }
 
@@ -50,8 +52,7 @@ public class AsyncioTableModel extends ConcurrencyTableModel {
       case GRAPH_COLUMN:
         return new GraphCell();
       case EVENT_COLUMN:
-        //return myThreadingNamesManager.getFullEventName(event);
-        return event.getEventActionName();
+        return myThreadingNamesManager.getFullEventName(event);
       default:
         return null;
     }

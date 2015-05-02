@@ -2,17 +2,16 @@
 package com.jetbrains.python.debugger.concurrency.tool.threading.table;
 
 import com.jetbrains.python.debugger.PyConcurrencyEvent;
+import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyNamesManager;
 import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyTableModel;
 import com.jetbrains.python.debugger.concurrency.tool.graph.GraphCell;
 import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
-import com.jetbrains.python.debugger.concurrency.tool.threading.ThreadingNamesManager;
 
 public class ThreadingTableModel extends ConcurrencyTableModel {
-  private final ThreadingNamesManager myThreadingNamesManager;
 
   public ThreadingTableModel(PyThreadingLogManagerImpl logManager) {
     super(logManager);
-    myThreadingNamesManager = new ThreadingNamesManager();
+    myThreadingNamesManager = new ConcurrencyNamesManager();
     COLUMN_NAMES = new String[]{"Thread", "Graph", "Event"};
   }
 

@@ -84,6 +84,33 @@ def get_text_list_for_frame(frame):
     return cmdTextList
 
 
+
+
+def send_message(event_class, time, name, thread_id, type, event, file, line, frame, lock_id=0, parent=None):
+    dbg = GlobalDebuggerHolder.globalDbg
+    cmdTextList = ['<xml>']
+
+    cmdTextList.append('<' + event_class)
+    cmdTextList.append(' time="%s"' % pydevd_vars.makeValidXmlValue(str(time)))
+    cmdTextList.append(' name="%s"' % pydevd_vars.makeValidXmlValue(name))
+    cmdTextList.append(' thread_id="%s"' % pydevd_vars.makeValidXmlValue(thread_id))
+    cmdTextList.append(' type="%s"' % pydevd_vars.makeValidXmlValue(type))
+    if type == "lock":
+        cmdTextList.append(' lock_id="%s"' % pydevd_vars.makeValidXmlValue(str(lock_id)))
+    if parent is not None:
+        cmdTextList.append(' parent="%s"' % pydevd_vars.makeValidXmlValue(parent))
+    cmdTextList.append(' event="%s"' % pydevd_vars.makeValidXmlValue(event))
+    cmdTextList.append(' file="%s"' % pydevd_vars.makeValidXmlValue(file))
+    cmdTextList.append(' line="%s"' % pydevd_vars.makeValidXmlValue(str(line)))
+    cmdTextList.append('></' + event_class + '>')
+
+    cmdTextList += get_text_list_for_frame(frame)
+    cmdTextList.append('</xml>')
+
+    text = ''.join(cmdTextList)
+    dbg.writer.addCommand(NetCommand(144, 0, text))
+
+
 class ThreadingLogger:
     def __init__(self):
         self.start_time = cur_time()
@@ -150,7 +177,7 @@ class ThreadingLogger:
                         parent = None
                         if real_method in ("start", "stop"):
                             parent = GetThreadId(t)
-                        self.send_message(event_time, name, thread_id, "thread",
+                        send_message("threading_event", event_time, name, thread_id, "thread",
                         real_method, back.f_code.co_filename, back.f_lineno, back, parent=parent)
                         # print(event_time, self_obj.getName(), thread_id, "thread",
                         #       real_method, back.f_code.co_filename, back.f_lineno)
@@ -176,7 +203,7 @@ class ThreadingLogger:
                         if real_method == "release_end":
                             # do not log release end. Maybe use it later
                             return
-                        self.send_message(event_time, t.getName(), GetThreadId(t), "lock",
+                        send_message("threading_event", event_time, t.getName(), GetThreadId(t), "lock",
                         real_method, back.f_code.co_filename, back.f_lineno, back, lock_id=str(id(self_obj)))
                         # print(event_time, t.getName(), GetThreadId(t), "lock",
                         #       real_method, back.f_code.co_filename, back.f_lineno)
@@ -234,47 +261,31 @@ class AsyncioLogger:
         back = frame.f_back
         method_name = back.f_code.co_name
 
-        # Coroutines
-        #
-        # if DictContains(back.f_locals, "self"):
-        #     self_obj = back.f_locals["self"]
-        #     if isinstance(self_obj, asyncio.tasks.CoroWrapper):
-        #         if method_name in ("__next__", "send"):
-        #             coro_name = self.coro_mgr.get(str(id(self_obj)))
-        #             task_id = self.get_task_id(frame)
-        #             task_name = self.task_mgr.get(str(task_id))
-        #             # print("%s %s %s %s" % (task_name, coro_name, frame.f_code.co_filename, frame.f_lineno))
-        #             self.send_message(event_time, task_name, coro_name, frame.f_code.co_filename, frame.f_lineno, frame)
-
         if DictContains(frame.f_locals, "self"):
             self_obj = frame.f_locals["self"]
             if isinstance(self_obj, asyncio.Task):
                 if method_name in ("__init__",):
                     task_id = id(self_obj)
                     task_name = self.task_mgr.get(str(task_id))
-                    # print("%s %s %s %s" % (task_name, coro_name, frame.f_code.co_filename, frame.f_lineno))
-                    self.send_message(event_time, task_name, "thread", "start", frame.f_code.co_filename, frame.f_lineno, frame)
+                    send_message("asyncio_event", event_time, task_name, task_name, "thread", "start", frame.f_code.co_filename,
+                                 frame.f_lineno, frame)
 
+            method_name = frame.f_code.co_name
+            if isinstance(self_obj, asyncio.Lock):
+                if method_name in ("acquire", "release"):
+                    task_id = self.get_task_id(frame)
+                    task_name = self.task_mgr.get(str(task_id))
 
+                    if method_name == "acquire":
+                        if not self_obj._waiters and not self_obj.locked():
+                            send_message("asyncio_event", event_time, task_name, task_name, "lock",
+                                         method_name+"_begin", frame.f_code.co_filename, frame.f_lineno, frame, lock_id=str(id(self_obj)))
+                        if self_obj.locked():
+                            method_name += "_begin"
+                        else:
+                            method_name += "_end"
+                    else:
+                        method_name += "_end"
 
-
-    def send_message(self, time, task_name, type, event, file, line, frame):
-        dbg = GlobalDebuggerHolder.globalDbg
-        cmdTextList = ['<xml>']
-
-        cmdTextList.append('<asyncio_event')
-        cmdTextList.append(' time="%s"' % pydevd_vars.makeValidXmlValue(str(time)))
-        cmdTextList.append(' task_name="%s"' % pydevd_vars.makeValidXmlValue(task_name))
-        cmdTextList.append(' type="%s"' % pydevd_vars.makeValidXmlValue(type))
-        cmdTextList.append(' event="%s"' % pydevd_vars.makeValidXmlValue(event))
-        cmdTextList.append(' file="%s"' % pydevd_vars.makeValidXmlValue(file))
-        cmdTextList.append(' line="%s"' % pydevd_vars.makeValidXmlValue(str(line)))
-        cmdTextList.append('></asyncio_event>')
-
-        cmdTextList += get_text_list_for_frame(frame)
-        cmdTextList.append('</xml>')
-
-        text = ''.join(cmdTextList)
-        dbg.writer.addCommand(NetCommand(144, 0, text))
-
-
+                    send_message("asyncio_event", event_time, task_name, task_name, "lock",
+                                 method_name, frame.f_code.co_filename, frame.f_lineno, frame, lock_id=str(id(self_obj)))

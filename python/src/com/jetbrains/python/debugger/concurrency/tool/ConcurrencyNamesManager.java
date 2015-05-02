@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jetbrains.python.debugger.concurrency.tool.threading;
+package com.jetbrains.python.debugger.concurrency.tool;
 
 
 import com.intellij.util.containers.hash.HashMap;
-import com.jetbrains.python.debugger.PyLockEvent;
 import com.jetbrains.python.debugger.PyConcurrencyEvent;
+import com.jetbrains.python.debugger.PyLockEvent;
 import com.jetbrains.python.debugger.PyThreadEvent;
 
 import java.util.Map;
 
-public class ThreadingNamesManager {
+public class ConcurrencyNamesManager {
   private Map<String, String> myLockMap;
   private int lastNumber = 0;
 
-  public ThreadingNamesManager() {
+  public ConcurrencyNamesManager() {
     myLockMap = new HashMap<String, String>();
   }
 
