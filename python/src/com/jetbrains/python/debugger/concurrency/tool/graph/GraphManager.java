@@ -1,15 +1,16 @@
 
 package com.jetbrains.python.debugger.concurrency.tool.graph;
 
+import com.intellij.util.containers.HashSet;
 import com.intellij.util.containers.hash.HashMap;
 import com.jetbrains.python.debugger.PyConcurrencyEvent;
-import com.jetbrains.python.debugger.PyLockEvent;
 import com.jetbrains.python.debugger.PyThreadEvent;
 import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
 import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyColorManager;
 import com.jetbrains.python.debugger.concurrency.tool.graph.elements.DrawElement;
 import com.jetbrains.python.debugger.concurrency.tool.graph.elements.EventDrawElement;
 import com.jetbrains.python.debugger.concurrency.tool.graph.elements.SimpleDrawElement;
+import com.jetbrains.python.debugger.concurrency.tool.graph.states.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class GraphManager {
   private final Object myUpdateObject = new Object();
   private int currentMaxThread = 0;
   private int[][] relations;
+  private GraphAnalyser myGraphAnalyser;
 
   public GraphManager(PyConcurrencyLogManager logManager, ConcurrencyColorManager colorManager) {
     myLogManager = logManager;
@@ -57,35 +59,6 @@ public class GraphManager {
     }
   }
 
-  private ThreadState getThreadStateAt(int index, String threadId) {
-    int locksAcquired = 0;
-    int locksOwn = 0;
-    for (int i = 0; i <= index; ++i) {
-      PyConcurrencyEvent event = myLogManager.getEventAt(i);
-      if ((event.getThreadId().equals(threadId) && event instanceof PyLockEvent)) {
-        PyLockEvent lockEvent = (PyLockEvent)event;
-        if (lockEvent.getType() == PyLockEvent.EventType.ACQUIRE_BEGIN) {
-          locksAcquired++;
-        }
-        if (lockEvent.getType() == PyLockEvent.EventType.ACQUIRE_END) {
-          locksOwn++;
-        }
-        if (lockEvent.getType() == PyLockEvent.EventType.RELEASE) {
-          locksAcquired--;
-          locksOwn--;
-        }
-      }
-    }
-    if (locksOwn > 0) {
-      return new LockOwnThreadState();
-    }
-    if (locksAcquired > 0) {
-      return new LockWaitThreadState();
-    }
-    return new RunThreadState();
-  }
-
-
   private DrawElement getDrawElementForEvent(PyConcurrencyEvent event, DrawElement previousElement, int index) {
     switch (event.getType()) {
       case START:
@@ -99,7 +72,7 @@ public class GraphManager {
       case ACQUIRE_END:
         return new EventDrawElement(null, previousElement.getAfter(), new LockOwnThreadState());
       case RELEASE:
-        return new EventDrawElement(null, previousElement.getAfter(), getThreadStateAt(index, event.getThreadId()));
+        return new EventDrawElement(null, previousElement.getAfter(), myGraphAnalyser.getThreadStateAt(index, event.getThreadId()));
       default:
         return new SimpleDrawElement(null, new StoppedThreadState(), new StoppedThreadState());
     }
@@ -120,6 +93,7 @@ public class GraphManager {
       threadCountForRow = new int[myLogManager.getSize() + 1];
       List<PyConcurrencyEvent> myLog = myLogManager.getLog();
       relations = new int[myLogManager.getSize() + 1][2];
+      myGraphAnalyser = new GraphAnalyser(myLogManager);
       currentMaxThread = 0;
       int i = 0;
       for (PyConcurrencyEvent event : myLog) {
@@ -145,8 +119,7 @@ public class GraphManager {
           }
           myGraphScheme[i][currentMaxThread - 1] = element;
 
-        }
-        else {
+        } else {
           int eventThreadIdInt = threadIndexToId.containsKey(eventThreadId) ? threadIndexToId.get(eventThreadId) : 0;
 
           if ((event instanceof PyThreadEvent) && (((PyThreadEvent)event).getParentThreadId() != null)) {
@@ -162,8 +135,18 @@ public class GraphManager {
               myGraphScheme[i][j].setColor(myGraphScheme[i - 1][j].getColor());
             }
           }
+
           myGraphScheme[i][eventThreadIdInt] = getDrawElementForEvent(event, myGraphScheme[i - 1][eventThreadIdInt], i);
           myGraphScheme[i][eventThreadIdInt].setColor(myColorManager.getItemColor(eventThreadId));
+
+          if (event.getType() == PyConcurrencyEvent.EventType.ACQUIRE_BEGIN) {
+            HashSet<String> deadlocked = myGraphAnalyser.checkForDeadlocks(i);
+            if (deadlocked != null) {
+              for (String threadId : deadlocked) {
+                myGraphScheme[i][threadIndexToId.get(threadId)].setAfter(new DeadlockState());
+              }
+            }
+          }
         }
         threadCountForRow[i] = currentMaxThread;
         ++i;

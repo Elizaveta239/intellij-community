@@ -16,8 +16,8 @@
 package com.jetbrains.python.debugger.concurrency.tool.graph.elements;
 
 import com.jetbrains.python.debugger.concurrency.tool.GraphSettings;
-import com.jetbrains.python.debugger.concurrency.tool.graph.StoppedThreadState;
-import com.jetbrains.python.debugger.concurrency.tool.graph.ThreadState;
+import com.jetbrains.python.debugger.concurrency.tool.graph.states.StoppedThreadState;
+import com.jetbrains.python.debugger.concurrency.tool.graph.states.ThreadState;
 
 import java.awt.*;
 

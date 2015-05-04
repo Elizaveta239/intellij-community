@@ -4,7 +4,6 @@ package com.jetbrains.python.debugger.concurrency;
 import com.intellij.openapi.project.Project;
 import com.intellij.xdebugger.XDebugSession;
 import com.intellij.xdebugger.XDebugSessionListener;
-import com.jetbrains.python.debugger.concurrency.tool.graph.ThreadState;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

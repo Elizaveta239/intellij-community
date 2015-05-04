@@ -6,6 +6,8 @@ import com.intellij.ui.ColoredTableCellRenderer;
 import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
 import com.jetbrains.python.debugger.concurrency.tool.GraphSettings;
 import com.jetbrains.python.debugger.concurrency.tool.graph.elements.DrawElement;
+import com.jetbrains.python.debugger.concurrency.tool.graph.states.StoppedThreadState;
+import com.jetbrains.python.debugger.concurrency.tool.graph.states.ThreadState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,7 +50,7 @@ public class GraphCellRenderer extends ColoredTableCellRenderer {
     int[] relation = myGraphManager.getRelationForRow(myRow);
     if (relation[0] != relation[1]) {
       DrawElement element = rowElements.get(relation[1]);
-      ThreadState state = element.getAfter() instanceof StoppedThreadState? element.getBefore(): element.getAfter();
+      ThreadState state = element.getAfter() instanceof StoppedThreadState ? element.getBefore(): element.getAfter();
       state.prepareStroke(g);
       drawRelation(g, relation[0], relation[1]);
     }

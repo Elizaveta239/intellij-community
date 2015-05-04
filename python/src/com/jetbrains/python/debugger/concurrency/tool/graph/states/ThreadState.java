@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jetbrains.python.debugger.concurrency.tool.graph;
+package com.jetbrains.python.debugger.concurrency.tool.graph.states;
 
 import java.awt.*;
 
-public class StoppedThreadState extends ThreadState {
-  @Override
-  public void prepareStroke(Graphics g) {
-  }
+
+public abstract class ThreadState {
+  public abstract void prepareStroke(Graphics g);
 }

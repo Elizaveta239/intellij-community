@@ -12,4 +12,5 @@ public class GraphSettings {
   public static Color BASIC_COLOR = new Color(125, 125, 125);
   public static Color LOCK_WAIT_COLOR = new Color(255, 179, 3);
   public static Color LOCK_OWNING_COLOR = new Color(120, 255, 0);
+  public static Color DEADLOCK_COLOR = Color.RED;
 }

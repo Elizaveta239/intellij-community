@@ -1,7 +1,7 @@
 
 package com.jetbrains.python.debugger.concurrency.tool.graph.elements;
 
-import com.jetbrains.python.debugger.concurrency.tool.graph.ThreadState;
+import com.jetbrains.python.debugger.concurrency.tool.graph.states.ThreadState;
 
 import java.awt.*;
 
@@ -23,6 +23,10 @@ public abstract class DrawElement {
 
   public ThreadState getAfter() {
     return myAfter;
+  }
+
+  public void setAfter(ThreadState state) {
+    myAfter = state;
   }
 
   public abstract DrawElement getNextElement();
