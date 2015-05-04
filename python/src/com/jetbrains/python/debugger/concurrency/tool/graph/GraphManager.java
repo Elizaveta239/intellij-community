@@ -3,6 +3,7 @@ package com.jetbrains.python.debugger.concurrency.tool.graph;
 
 import com.intellij.util.containers.hash.HashMap;
 import com.jetbrains.python.debugger.PyConcurrencyEvent;
+import com.jetbrains.python.debugger.PyLockEvent;
 import com.jetbrains.python.debugger.PyThreadEvent;
 import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
 import com.jetbrains.python.debugger.concurrency.tool.ConcurrencyColorManager;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GraphManager {
-  private final PyConcurrencyLogManager myLogManager;
+  private final PyConcurrencyLogManager<PyConcurrencyEvent> myLogManager;
   private final ConcurrencyColorManager myColorManager;
   private DrawElement[][] myGraphScheme;
   private int[] threadCountForRow;
@@ -47,12 +48,43 @@ public class GraphManager {
   }
 
   public ArrayList<DrawElement> getDrawElementsForRow(int row) {
-    ArrayList<DrawElement> rowElements = new ArrayList<DrawElement>();
-    for (DrawElement element: myGraphScheme[row]) {
-      rowElements.add(element);
+    synchronized (myUpdateObject) {
+      ArrayList<DrawElement> rowElements = new ArrayList<DrawElement>();
+      for (DrawElement element : myGraphScheme[row]) {
+        rowElements.add(element);
+      }
+      return rowElements;
     }
-    return rowElements;
   }
+
+  private ThreadState getThreadStateAt(int index, String threadId) {
+    int locksAcquired = 0;
+    int locksOwn = 0;
+    for (int i = 0; i <= index; ++i) {
+      PyConcurrencyEvent event = myLogManager.getEventAt(i);
+      if ((event.getThreadId().equals(threadId) && event instanceof PyLockEvent)) {
+        PyLockEvent lockEvent = (PyLockEvent)event;
+        if (lockEvent.getType() == PyLockEvent.EventType.ACQUIRE_BEGIN) {
+          locksAcquired++;
+        }
+        if (lockEvent.getType() == PyLockEvent.EventType.ACQUIRE_END) {
+          locksOwn++;
+        }
+        if (lockEvent.getType() == PyLockEvent.EventType.RELEASE) {
+          locksAcquired--;
+          locksOwn--;
+        }
+      }
+    }
+    if (locksOwn > 0) {
+      return new LockOwnThreadState();
+    }
+    if (locksAcquired > 0) {
+      return new LockWaitThreadState();
+    }
+    return new RunThreadState();
+  }
+
 
   private DrawElement getDrawElementForEvent(PyConcurrencyEvent event, DrawElement previousElement, int index) {
     switch (event.getType()) {
@@ -67,7 +99,7 @@ public class GraphManager {
       case ACQUIRE_END:
         return new EventDrawElement(null, previousElement.getAfter(), new LockOwnThreadState());
       case RELEASE:
-        return new EventDrawElement(null, previousElement.getAfter(), myLogManager.getThreadStateAt(index, event.getThreadId()));
+        return new EventDrawElement(null, previousElement.getAfter(), getThreadStateAt(index, event.getThreadId()));
       default:
         return new SimpleDrawElement(null, new StoppedThreadState(), new StoppedThreadState());
     }

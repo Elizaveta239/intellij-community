@@ -31,32 +31,4 @@ public class PyThreadingLogManagerImpl extends PyConcurrencyLogManager<PyConcurr
     return myLog.get(index).getThreadId();
   }
 
-  public ThreadState getThreadStateAt(int index, String threadId) {
-    int locksAcquired = 0;
-    int locksOwn = 0;
-    for (int i = 0; i <= index; ++i) {
-      PyConcurrencyEvent event = myLog.get(i);
-      if ((event.getThreadId().equals(threadId) && event instanceof PyLockEvent)) {
-        PyLockEvent lockEvent = (PyLockEvent)event;
-        if (lockEvent.getType() == PyLockEvent.EventType.ACQUIRE_BEGIN) {
-          locksAcquired++;
-        }
-        if (lockEvent.getType() == PyLockEvent.EventType.ACQUIRE_END) {
-          locksOwn++;
-        }
-        if (lockEvent.getType() == PyLockEvent.EventType.RELEASE) {
-          locksAcquired--;
-          locksOwn--;
-        }
-      }
-    }
-    if (locksOwn > 0) {
-      return new LockOwnThreadState();
-    }
-    if (locksAcquired > 0) {
-      return new LockWaitThreadState();
-    }
-    return new RunThreadState();
-  }
-
 }

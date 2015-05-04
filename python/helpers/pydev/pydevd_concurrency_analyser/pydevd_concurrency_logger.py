@@ -251,9 +251,10 @@ class AsyncioLogger:
             self_obj = frame.f_locals["self"]
 
         method_name = frame.f_code.co_name
-        if isinstance(self_obj, asyncio.base_events.BaseEventLoop):
-            if method_name == "_run_once":
-                print("Loop iteration")
+        # Debug loop iterations
+        # if isinstance(self_obj, asyncio.base_events.BaseEventLoop):
+        #     if method_name == "_run_once":
+        #         print("Loop iteration")
 
         if not hasattr(frame, "f_back") or frame.f_back is None:
             return

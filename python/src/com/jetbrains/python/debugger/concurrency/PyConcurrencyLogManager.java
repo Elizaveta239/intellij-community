@@ -82,8 +82,6 @@ public abstract class PyConcurrencyLogManager<T> {
     void logChanged();
   }
 
-  public abstract ThreadState getThreadStateAt(int index, String threadId);
-
   public void registerListener(@NotNull Listener listener) {
     synchronized (myListenersObject) {
       myListeners.add(listener);
