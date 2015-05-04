@@ -13,7 +13,7 @@ def wrapper(fun):
     return inner
 
 
-class LockWrapper(object):
+class ObjectWrapper(object):
     def __init__(self, object):
         self.wrapped_object = object
 
@@ -50,7 +50,7 @@ class LockWrapper(object):
 def factory_wrapper(fun):
     def inner(*args, **kwargs):
         obj = fun(*args, **kwargs)
-        return LockWrapper(obj)
+        return ObjectWrapper(obj)
     return inner
 
 
@@ -62,3 +62,11 @@ def wrap_threads():
     import threading
     threading.Lock = factory_wrapper(threading.Lock)
     threading.RLock = factory_wrapper(threading.RLock)
+
+    # queue patching
+    import queue
+    orig = queue.Queue
+    def wrapper(*args, **kwargs):
+        obj = orig(*args, **kwargs)
+        return ObjectWrapper(obj)
+    queue.Queue = wrapper

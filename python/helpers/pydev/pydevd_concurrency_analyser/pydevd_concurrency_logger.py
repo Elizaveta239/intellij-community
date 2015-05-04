@@ -1,7 +1,7 @@
 
 from pydevd_constants import DictContains, GetThreadId
 import pydevd_file_utils
-from pydevd_concurrency_analyser.pydevd_thread_wrappers import LockWrapper
+from pydevd_concurrency_analyser.pydevd_thread_wrappers import ObjectWrapper
 import pydevd_vars
 import time
 
@@ -22,6 +22,7 @@ INNER_METHODS = ['_stop']
 INNER_FILES = ['threading.py']
 THREAD_METHODS = ['start', '_stop', 'join']
 LOCK_METHODS = ['acquire', 'release', '__enter__', '__exit__']
+QUEUE_METHODS = ['put', 'get']
 
 from pydevd_comm import GlobalDebuggerHolder, NetCommand
 import traceback
@@ -115,36 +116,12 @@ class ThreadingLogger:
     def __init__(self):
         self.start_time = cur_time()
 
-    def send_message(self, time, name, thread_id, type, event, file, line, frame, lock_id=0, parent=None):
-        dbg = GlobalDebuggerHolder.globalDbg
-        cmdTextList = ['<xml>']
-
-        cmdTextList.append('<threading_event')
-        cmdTextList.append(' time="%s"' % pydevd_vars.makeValidXmlValue(str(time)))
-        cmdTextList.append(' name="%s"' % pydevd_vars.makeValidXmlValue(name))
-        cmdTextList.append(' thread_id="%s"' % pydevd_vars.makeValidXmlValue(thread_id))
-        cmdTextList.append(' type="%s"' % pydevd_vars.makeValidXmlValue(type))
-        if type == "lock":
-            cmdTextList.append(' lock_id="%s"' % pydevd_vars.makeValidXmlValue(str(lock_id)))
-        if parent is not None:
-            cmdTextList.append(' parent="%s"' % pydevd_vars.makeValidXmlValue(parent))
-        cmdTextList.append(' event="%s"' % pydevd_vars.makeValidXmlValue(event))
-        cmdTextList.append(' file="%s"' % pydevd_vars.makeValidXmlValue(file))
-        cmdTextList.append(' line="%s"' % pydevd_vars.makeValidXmlValue(str(line)))
-        cmdTextList.append('></threading_event>')
-
-        cmdTextList += get_text_list_for_frame(frame)
-        cmdTextList.append('</xml>')
-
-        text = ''.join(cmdTextList)
-        dbg.writer.addCommand(NetCommand(144, 0, text))
-
     def log_event(self, frame):
         write_log = False
         self_obj = None
         if DictContains(frame.f_locals, "self"):
             self_obj = frame.f_locals["self"]
-            if isinstance(self_obj, threading.Thread) or self_obj.__class__ == LockWrapper:
+            if isinstance(self_obj, threading.Thread) or self_obj.__class__ == ObjectWrapper:
                 write_log = True
 
         try:
@@ -182,12 +159,13 @@ class ThreadingLogger:
                         # print(event_time, self_obj.getName(), thread_id, "thread",
                         #       real_method, back.f_code.co_filename, back.f_lineno)
 
-                if self_obj.__class__ == LockWrapper:
+                if self_obj.__class__ == ObjectWrapper:
                     if back_base in DONT_TRACE_THREADING:
                         # do not trace methods called from threading
                         return
                     if DictContains(frame.f_locals, "attr") and \
-                                    frame.f_locals["attr"] in LOCK_METHODS:
+                            (frame.f_locals["attr"] in LOCK_METHODS or
+                            frame.f_locals["attr"] in QUEUE_METHODS):
                         _, back_back_base = pydevd_file_utils.GetFilenameAndBase(back.f_back)
                         back = back.f_back
                         if back_back_base in DONT_TRACE_THREADING:
@@ -205,6 +183,11 @@ class ThreadingLogger:
                             return
                         send_message("threading_event", event_time, t.getName(), GetThreadId(t), "lock",
                         real_method, back.f_code.co_filename, back.f_lineno, back, lock_id=str(id(self_obj)))
+
+                        if real_method in ("put_end", "get_end"):
+                            # fake release for queue, cause we don't call it directly
+                            send_message("threading_event", event_time, t.getName(), GetThreadId(t), "lock",
+                                         "release", back.f_code.co_filename, back.f_lineno, back, lock_id=str(id(self_obj)))
                         # print(event_time, t.getName(), GetThreadId(t), "lock",
                         #       real_method, back.f_code.co_filename, back.f_lineno)
 

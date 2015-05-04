@@ -90,10 +90,12 @@ public class ProtocolParser {
     else if (eventType.equals("stop")) {
       threadingEvent.setType(PyConcurrencyEvent.EventType.STOP);
     }
-    else if (eventType.equals("acquire_begin") || eventType.equals("__enter___begin")) {
+    else if (eventType.equals("acquire_begin") || eventType.equals("__enter___begin")
+             || (eventType.equals("get_begin")) || (eventType.equals("put_begin"))) {
       threadingEvent.setType(PyConcurrencyEvent.EventType.ACQUIRE_BEGIN);
     }
-    else if (eventType.equals("acquire_end") || eventType.equals("__enter___end")) {
+    else if (eventType.equals("acquire_end") || eventType.equals("__enter___end")
+             || (eventType.equals("get_end")) || (eventType.equals("put_end"))) {
       threadingEvent.setType(PyConcurrencyEvent.EventType.ACQUIRE_END);
     }
     else if (eventType.startsWith("release") || eventType.startsWith("__exit__")) {

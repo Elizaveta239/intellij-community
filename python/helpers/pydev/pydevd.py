@@ -84,8 +84,8 @@ import pydevd_traceproperty
 from _pydev_imps import _pydev_time as time, _pydev_thread
 
 import _pydev_threading as threading
-from pydevd_concurrency_analyser.pydevd_thread_wrappers import wrap_threads, LockWrapper
-from pydevd_concurrency_analyser.pydevd_concurrency_logger import ThreadingLogger, AsyncioLogger
+from pydevd_concurrency_analyser.pydevd_thread_wrappers import wrap_threads, ObjectWrapper
+from pydevd_concurrency_analyser.pydevd_concurrency_logger import ThreadingLogger, AsyncioLogger, send_message
 
 import os
 import atexit
@@ -1650,7 +1650,7 @@ class PyDB:
         if self.thread_analyser is not None:
             wrap_threads()
             t = threadingCurrentThread()
-            self.thread_analyser.send_message(0, t.getName(), GetThreadId(t), "thread", "start", file, 1, None, parent=GetThreadId(t))
+            send_message("threading_event", 0, t.getName(), GetThreadId(t), "thread", "start", file, 1, None, parent=GetThreadId(t))
 
         pydev_imports.execfile(file, globals, locals)  # execute the script
 
