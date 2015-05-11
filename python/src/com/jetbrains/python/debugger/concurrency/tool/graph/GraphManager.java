@@ -107,9 +107,11 @@ public class GraphManager {
 
           String parentId = ((PyThreadEvent)event).getParentThreadId();
           if (parentId != null) {
-            int parentNum = threadIndexToId.get(parentId);
-            int eventNum = currentMaxThread - 1;
-            addRelation(i, parentNum, eventNum);
+            if (threadIndexToId.containsKey(parentId)) {
+              int parentNum = threadIndexToId.get(parentId);
+              int eventNum = currentMaxThread - 1;
+              addRelation(i, parentNum, eventNum);
+            }
           }
 
           myGraphScheme[i] = new DrawElement[currentMaxThread];
@@ -122,10 +124,13 @@ public class GraphManager {
         } else {
           int eventThreadIdInt = threadIndexToId.containsKey(eventThreadId) ? threadIndexToId.get(eventThreadId) : 0;
 
-          if ((event instanceof PyThreadEvent) && (((PyThreadEvent)event).getParentThreadId() != null)) {
-            int parentNum = threadIndexToId.get(((PyThreadEvent)event).getParentThreadId());
-            int eventNum = eventThreadIdInt;
-            addRelation(i, parentNum, eventNum);
+          if (event instanceof PyThreadEvent) {
+            String parentId = ((PyThreadEvent)event).getParentThreadId();
+            if ((parentId != null) && (threadIndexToId.containsKey(parentId))) {
+              int parentNum = threadIndexToId.get(((PyThreadEvent)event).getParentThreadId());
+              int eventNum = eventThreadIdInt;
+              addRelation(i, parentNum, eventNum);
+            }
           }
 
           myGraphScheme[i] = new DrawElement[currentMaxThread];
