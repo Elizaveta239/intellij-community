@@ -18,7 +18,7 @@ class ObjectWrapper(object):
         self.wrapped_object = object
 
     def __getattr__(self, attr):
-        orig_attr = self.wrapped_object.__getattribute__(attr)
+        orig_attr = getattr(self.wrapped_object, attr) #.__getattribute__(attr)
         if callable(orig_attr):
             def patched_attr(*args, **kwargs):
                 self.call_begin(attr)
@@ -64,9 +64,19 @@ def wrap_threads():
     threading.RLock = factory_wrapper(threading.RLock)
 
     # queue patching
-    import queue
-    orig = queue.Queue
-    def wrapper(*args, **kwargs):
-        obj = orig(*args, **kwargs)
-        return ObjectWrapper(obj)
-    queue.Queue = wrapper
+    try:
+        import queue
+        orig = queue.Queue
+        def wrapper(*args, **kwargs):
+            obj = orig(*args, **kwargs)
+            return ObjectWrapper(obj)
+        queue.Queue = wrapper
+
+    except:
+        import Queue
+        orig = Queue.Queue
+        def wrapper(*args, **kwargs):
+            obj = orig(*args, **kwargs)
+            return ObjectWrapper(obj)
+        Queue.Queue = wrapper
+

@@ -368,6 +368,7 @@ class PyDB:
         self.has_plugin_line_breaks = False
         self.has_plugin_exception_breaks = False
         self.thread_analyser = None
+        self.asyncio_analyser = None
         
     def get_plugin_lazy_init(self):
         if self.plugin is None and SUPPORT_PLUGINS:
@@ -2229,7 +2230,9 @@ if __name__ == '__main__':
             debugger.thread_analyser = ThreadingLogger()
 
         if setup['save-asyncio']:
-            debugger.asyncio_analyser = AsyncioLogger()
+            if IS_PY3K:
+                debugger.asyncio_analyser = AsyncioLogger()
+
 
         try:
             debugger.connect(host, port)
