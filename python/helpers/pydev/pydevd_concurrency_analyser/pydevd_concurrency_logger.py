@@ -273,3 +273,27 @@ class AsyncioLogger:
 
                     send_message("asyncio_event", event_time, task_name, task_name, "lock",
                                  method_name, frame.f_code.co_filename, frame.f_lineno, frame, lock_id=str(id(self_obj)))
+
+            if isinstance(self_obj, asyncio.Queue):
+                if method_name in ("put", "get", "_put", "_get"):
+                    task_id = self.get_task_id(frame)
+                    task_name = self.task_mgr.get(str(task_id))
+
+                    if method_name == "put":
+                        send_message("asyncio_event", event_time, task_name, task_name, "lock",
+                                     "acquire_begin", frame.f_code.co_filename, frame.f_lineno, frame, lock_id=str(id(self_obj)))
+                    elif method_name == "_put":
+                        send_message("asyncio_event", event_time, task_name, task_name, "lock",
+                                     "acquire_end", frame.f_code.co_filename, frame.f_lineno, frame, lock_id=str(id(self_obj)))
+                        send_message("asyncio_event", event_time, task_name, task_name, "lock",
+                                     "release", frame.f_code.co_filename, frame.f_lineno, frame, lock_id=str(id(self_obj)))
+                    elif method_name == "get":
+                        back = frame.f_back
+                        if back.f_code.co_name != "send":
+                            send_message("asyncio_event", event_time, task_name, task_name, "lock",
+                                         "acquire_begin", frame.f_code.co_filename, frame.f_lineno, frame, lock_id=str(id(self_obj)))
+                        else:
+                            send_message("asyncio_event", event_time, task_name, task_name, "lock",
+                                         "acquire_end", frame.f_code.co_filename, frame.f_lineno, frame, lock_id=str(id(self_obj)))
+                            send_message("asyncio_event", event_time, task_name, task_name, "lock",
+                                         "release", frame.f_code.co_filename, frame.f_lineno, frame, lock_id=str(id(self_obj)))
