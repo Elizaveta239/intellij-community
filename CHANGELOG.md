@@ -1,5 +1,12 @@
 # Changes
 
+## 0.4, 11.05.2015
+
+* Support for Task, Lock and Queue from `asyncio` module
+* Remove coroutines support from `asyncio` module
+* Support Queue from `asyncio` module
+* Deadlocks detection
+
 ## 0.3, 18.04.2015
 
 * Support for coroutines from `asyncio` module

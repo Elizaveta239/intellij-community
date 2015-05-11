@@ -34,14 +34,14 @@ events and threading graph. Each row in the table corresponds to event in a conc
 the following types of events:
  
 For module `threading`:
-* Thread start
-* Thread join
-* Thread stop
-* Lock acquire
-* Lock release
+* Thread: start, join, stop
+* Lock: acquire, release
+* Queue: put, get
 
 For module `asyncio`:
-* Coroutines
+* Task start
+* Lock: acquire, release
+* Queue: put, get
 
 ### Navigation to source code
 
