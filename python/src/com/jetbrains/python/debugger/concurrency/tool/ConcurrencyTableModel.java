@@ -21,9 +21,8 @@ import com.jetbrains.python.debugger.concurrency.PyConcurrencyLogManager;
 import javax.swing.table.AbstractTableModel;
 
 public abstract class ConcurrencyTableModel extends AbstractTableModel {
-  public static final int TASK_COLUMN = 0;
-  public static final int GRAPH_COLUMN = 1;
-  public static final int EVENT_COLUMN = 2;
+  public static final int GRAPH_COLUMN = 0;
+  public static final int EVENT_COLUMN = 1;
 
   public static final int COLUMN_COUNT = EVENT_COLUMN + 1;
   protected static String[] COLUMN_NAMES;

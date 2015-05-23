@@ -25,6 +25,7 @@ import com.jetbrains.python.debugger.concurrency.tool.graph.GraphCell;
 import com.jetbrains.python.debugger.concurrency.tool.graph.GraphCellRenderer;
 import com.jetbrains.python.debugger.concurrency.tool.graph.GraphManager;
 
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -38,8 +39,12 @@ public class AsyncioTable extends ConcurrencyTable {
     //myGraphManager = new AsyncioGraphManager(logManager, myColorManager);
     myGraphManager = new GraphManager(logManager, myColorManager);
 
-    setDefaultRenderer(TaskCell.class, new TaskCellRenderer(myColorManager, myLogManager));
+    //setDefaultRenderer(TaskCell.class, new TaskCellRenderer(myColorManager, myLogManager));
     setDefaultRenderer(GraphCell.class, new GraphCellRenderer(myLogManager, myGraphManager));
+
+    // Presentation mode for screenshots
+    // Remove later
+    setFont(new Font("Arial", Font.BOLD, 14));
 
     addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {

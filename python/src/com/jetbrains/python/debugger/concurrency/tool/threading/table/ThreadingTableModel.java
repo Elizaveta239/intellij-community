@@ -12,14 +12,12 @@ public class ThreadingTableModel extends ConcurrencyTableModel {
   public ThreadingTableModel(PyThreadingLogManagerImpl logManager) {
     super(logManager);
     myThreadingNamesManager = new ConcurrencyNamesManager();
-    COLUMN_NAMES = new String[]{"Thread", "Graph", "Event"};
+    COLUMN_NAMES = new String[]{"Graph", "Event"};
   }
 
   @Override
   public Class<?> getColumnClass(int columnIndex) {
     switch (columnIndex) {
-      case TASK_COLUMN:
-        return ThreadCell.class;
       case GRAPH_COLUMN:
         return GraphCell.class;
       case EVENT_COLUMN:
@@ -33,8 +31,6 @@ public class ThreadingTableModel extends ConcurrencyTableModel {
   public Object getValueAt(int rowIndex, int columnIndex) {
     PyConcurrencyEvent event = myLogManager.getEventAt(rowIndex);
     switch (columnIndex) {
-      case TASK_COLUMN:
-        return new ThreadCell(event.getThreadName());
       case GRAPH_COLUMN:
         return new GraphCell();
       case EVENT_COLUMN:

@@ -12,6 +12,7 @@ import com.jetbrains.python.debugger.concurrency.tool.graph.GraphCellRenderer;
 import com.jetbrains.python.debugger.concurrency.tool.graph.GraphManager;
 import com.jetbrains.python.debugger.concurrency.tool.threading.PyThreadingLogManagerImpl;
 
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -24,10 +25,13 @@ public class ThreadingTable extends ConcurrencyTable {
     myColorManager = new ConcurrencyColorManager();
     myGraphManager = new GraphManager(myLogManager, myColorManager);
     setDefaultRenderer(GraphCell.class, new GraphCellRenderer(myLogManager, myGraphManager));
-    setDefaultRenderer(ThreadCell.class, new ThreadCellRenderer(myColorManager, myLogManager));
+    //setDefaultRenderer(ThreadCell.class, new ThreadCellRenderer(myColorManager, myLogManager));
 
     setRowHeight(GraphSettings.CELL_HEIGH);
     setShowHorizontalLines(false);
+    // Presentation mode for screenshots
+    // Remove later
+    setFont(new Font("Arial", Font.BOLD, 14));
 
     addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {

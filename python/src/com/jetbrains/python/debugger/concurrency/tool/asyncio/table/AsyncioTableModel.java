@@ -32,8 +32,6 @@ public class AsyncioTableModel extends ConcurrencyTableModel {
   @Override
   public Class<?> getColumnClass(int columnIndex) {
     switch (columnIndex) {
-      case TASK_COLUMN:
-        return TaskCell.class;
       case GRAPH_COLUMN:
         return GraphCell.class;
       case EVENT_COLUMN:
@@ -47,8 +45,6 @@ public class AsyncioTableModel extends ConcurrencyTableModel {
   public Object getValueAt(int rowIndex, int columnIndex) {
     PyConcurrencyEvent event = myLogManager.getEventAt(rowIndex);
     switch (columnIndex) {
-      case TASK_COLUMN:
-        return new TaskCell(event.getThreadId());
       case GRAPH_COLUMN:
         return new GraphCell();
       case EVENT_COLUMN:
