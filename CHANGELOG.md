@@ -1,5 +1,9 @@
 # Changes
 
+## 0.4.1, 23.05.2015
+
+Bug fix release
+
 ## 0.4, 11.05.2015
 
 * Support for Task, Lock and Queue from `asyncio` module
