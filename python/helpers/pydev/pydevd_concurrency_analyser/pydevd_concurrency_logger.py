@@ -109,7 +109,8 @@ def send_message(event_class, time, name, thread_id, type, event, file, line, fr
     cmdTextList.append('</xml>')
 
     text = ''.join(cmdTextList)
-    dbg.writer.addCommand(NetCommand(144, 0, text))
+    if dbg.writer is not None:
+        dbg.writer.addCommand(NetCommand(144, 0, text))
 
 
 class ThreadingLogger:

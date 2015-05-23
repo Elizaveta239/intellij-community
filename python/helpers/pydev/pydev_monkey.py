@@ -423,6 +423,21 @@ class _NewThreadStartupWithTrace:
         if global_debugger is not None:
             global_debugger.SetTrace(global_debugger.trace_dispatch)
 
+        if global_debugger.thread_analyser is not None:
+            # we can detect start_new_thread only here
+            # TODO: create a normal way to handle such calls
+            try:
+                import _pydev_threading as threading
+                from pydevd_constants import GetThreadId
+                threadingCurrentThread = threading.currentThread
+                t = threadingCurrentThread()
+                from pydevd_concurrency_analyser.pydevd_concurrency_logger import send_message, cur_time
+                event_time = cur_time() - global_debugger.thread_analyser.start_time
+                send_message("threading_event", event_time, t.getName(), GetThreadId(t), "thread",
+                             "start", "code_name", 0, None, parent=GetThreadId(t))
+            except:
+                print("something goes wrong")
+
         return self.original_func(*self.args, **self.kwargs)
 
 class _NewThreadStartupWithoutTrace:
