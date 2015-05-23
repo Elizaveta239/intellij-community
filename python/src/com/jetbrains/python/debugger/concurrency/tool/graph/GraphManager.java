@@ -61,6 +61,8 @@ public class GraphManager {
 
   private DrawElement getDrawElementForEvent(PyConcurrencyEvent event, DrawElement previousElement, int index) {
     switch (event.getType()) {
+      case CREATE:
+        return new EventDrawElement(null, previousElement.getAfter(), previousElement.getAfter());
       case START:
         return new EventDrawElement(null, new StoppedThreadState(), new RunThreadState());
       case JOIN:

@@ -21,7 +21,7 @@ DONT_TRACE_THREADING = ['threading.py', 'pydevd.py']
 INNER_METHODS = ['_stop']
 INNER_FILES = ['threading.py']
 THREAD_METHODS = ['start', '_stop', 'join']
-LOCK_METHODS = ['acquire', 'release', '__enter__', '__exit__']
+LOCK_METHODS = ['__init__', 'acquire', 'release', '__enter__', '__exit__']
 QUEUE_METHODS = ['put', 'get']
 
 from pydevd_comm import GlobalDebuggerHolder, NetCommand
@@ -163,14 +163,17 @@ class ThreadingLogger:
                     if back_base in DONT_TRACE_THREADING:
                         # do not trace methods called from threading
                         return
+                    _, back_back_base = pydevd_file_utils.GetFilenameAndBase(back.f_back)
+                    back = back.f_back
+                    if back_back_base in DONT_TRACE_THREADING:
+                        # back_back_base is the file, where the method was called froms
+                        return
+                    if method_name == "__init__":
+                        send_message("threading_event", event_time, t.getName(), GetThreadId(t), "lock",
+                                     method_name, back.f_code.co_filename, back.f_lineno, back, lock_id=str(id(frame.f_locals["self"])))
                     if DictContains(frame.f_locals, "attr") and \
                             (frame.f_locals["attr"] in LOCK_METHODS or
                             frame.f_locals["attr"] in QUEUE_METHODS):
-                        _, back_back_base = pydevd_file_utils.GetFilenameAndBase(back.f_back)
-                        back = back.f_back
-                        if back_back_base in DONT_TRACE_THREADING:
-                            # back_back_base is the file, where the method was called froms
-                            return
                         real_method = frame.f_locals["attr"]
                         if method_name == "call_begin":
                             real_method += "_begin"
@@ -268,7 +271,7 @@ class AsyncioLogger:
                             method_name += "_begin"
                         else:
                             method_name += "_end"
-                    else:
+                    elif method_name == "release":
                         method_name += "_end"
 
                     send_message("asyncio_event", event_time, task_name, task_name, "lock",
