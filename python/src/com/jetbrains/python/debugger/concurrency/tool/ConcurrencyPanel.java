@@ -24,6 +24,8 @@ public abstract class ConcurrencyPanel extends SimpleToolWindowPanel implements 
 
   public abstract void initMessage();
 
+  protected abstract JPanel createToolbarPanel();
+
   public void showStackTrace(PyConcurrencyEvent event) {
     if (myStackTracePanel == null) {
       myStackTracePanel = new StackTracePanel(false, myProject);
@@ -41,6 +43,7 @@ public abstract class ConcurrencyPanel extends SimpleToolWindowPanel implements 
     p.add(component, JSplitPane.RIGHT);
     p.setDividerLocation((int)getSize().getWidth() * 2 / 3);
     add(p, BorderLayout.CENTER);
+    setToolbar(createToolbarPanel());
     validate();
     repaint();
   }

@@ -75,6 +75,10 @@ public abstract class PyConcurrencyEvent {
     myLine = line;
   }
 
+  public int getTime() {
+    return myTime;
+  }
+
   public Integer getLine() {
     return myLine;
   }

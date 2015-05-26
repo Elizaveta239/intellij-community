@@ -7,6 +7,7 @@ import com.intellij.xdebugger.XDebugSessionListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public abstract class PyConcurrencyLogManager<T> {
@@ -27,6 +28,8 @@ public abstract class PyConcurrencyLogManager<T> {
   public List<T> getLog() {
     return myLog;
   }
+
+  public abstract HashMap getStatistics();
 
   public String getStringRepresentation() {
     StringBuilder resultBuilder = new StringBuilder();
