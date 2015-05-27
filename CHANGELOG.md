@@ -1,5 +1,9 @@
 # Changes
 
+## 0.5, 27.05.2015
+
+* Show statistics for threads and tasks
+
 ## 0.4.1, 23.05.2015
 
 Bug fix release
