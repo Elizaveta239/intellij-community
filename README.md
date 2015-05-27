@@ -11,6 +11,8 @@ Some of it's features include:
 * Navigation to the source code for every concurrency event
 * A stack trace display
 
+*At the moment we recommend to use Python 3 for testing the tool, cause there are a number of bugs related to Python 2.*
+
 ## Installation
 
 A Thread analyser is a part of the PyCharm IDE, so its build instructions concur with
