@@ -25,6 +25,16 @@ public abstract class DrawElement {
     return myAfter;
   }
 
+  @Override
+  public boolean equals(Object element) {
+    if (!(element instanceof DrawElement)) {
+      return false;
+    }
+    DrawElement other = (DrawElement)element;
+    return (this.getBefore().getClass() == other.getBefore().getClass()) &&
+           (this.getAfter().getClass() == other.getAfter().getClass());
+  }
+
   public void setAfter(ThreadState state) {
     myAfter = state;
   }
